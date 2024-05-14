@@ -1,18 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path"
 	"runtime"
-	"time"
 
 	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/rand"
 )
 
 func main() {
@@ -20,21 +17,6 @@ func main() {
 		fmt.Printf("%s\n", err.Error())
 		os.Exit(1)
 	}
-}
-
-func ExperimentFromJSON(path string) (experiment.Experiment, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return experiment.Experiment{}, err
-	}
-	decoder := json.NewDecoder(file)
-	decoder.DisallowUnknownFields()
-
-	var exp []experiment.ParameterVariation
-	if err = decoder.Decode(&exp); err != nil {
-		return experiment.Experiment{}, err
-	}
-	return experiment.New(exp, rand.New(rand.NewSource(uint64(time.Now().UnixNano()))))
 }
 
 // RootCommand sets up the CLI
@@ -63,21 +45,21 @@ func RootCommand() *cobra.Command {
 			}
 
 			p := params.Default()
-			err := p.FromJSON(path.Join(dir, paramsFile))
+			err := util.ParametersFromFile(path.Join(dir, paramsFile), &p)
 			if err != nil {
 				return err
 			}
 
 			var exp experiment.Experiment
 			if expFile != "" {
-				exp, err = ExperimentFromJSON(path.Join(dir, expFile))
+				exp, err = util.ExperimentFromFile(path.Join(dir, expFile))
 				if err != nil {
 					return err
 				}
 			}
 			var observers util.ObserversDef
 			if obsFile != "" {
-				observers, err = util.ObserversDefFromJSON(path.Join(dir, obsFile))
+				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile))
 				if err != nil {
 					return err
 				}

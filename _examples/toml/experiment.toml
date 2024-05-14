@@ -1,0 +1,11 @@
+[[Experiment]]
+Parameter = "params.Nursing.MaxBroodNurseRatio"
+[Experiment.SequenceFloatRange]
+Min = 2
+Max = 3
+Values = 3
+
+[[Experiment]]
+Parameter = "params.Nursing.MaxBroodNurseRatio"
+[Experiment.SequenceFloatValues]
+Values = [0, 0.25, 0.5]
