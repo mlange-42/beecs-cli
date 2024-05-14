@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"reflect"
 
 	"github.com/mlange-42/arche-model/observer"
@@ -123,19 +122,4 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 type Observers struct {
 	TimeSeriesPlots []*window.Window
 	Tables          []*reporter.Callback
-}
-
-func ObserversDefFromJSON(path string) (ObserversDef, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return ObserversDef{}, err
-	}
-	decoder := json.NewDecoder(file)
-	decoder.DisallowUnknownFields()
-
-	var obs ObserversDef
-	if err = decoder.Decode(&obs); err != nil {
-		return obs, err
-	}
-	return obs, nil
 }

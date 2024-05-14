@@ -13,7 +13,10 @@
             "Params": {
                 "Cumulative": true
             },
-            "MaxRows": 730
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "WorkerCohorts", "X": "Time [d]", "Y": "Count"},
+            "Bounds": {"X": 1, "Y": 30, "W": 600, "H": 400}
         },
         {
             "Observer": "obs.Stores",
@@ -21,7 +24,10 @@
                 "PollenFactor": 20
             },
             "Columns": ["Honey", "Pollen x20"],
-            "MaxRows": 730
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "Stores", "X": "Time [d]", "Y": "Amount [kg]"},
+            "Bounds": {"X": 1, "Y": 470, "W": 600, "H": 400}
         }
     ]
 }
