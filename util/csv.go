@@ -8,12 +8,13 @@ import (
 )
 
 type CsvWriter struct {
+	sep         string
 	builder     strings.Builder
 	files       []*os.File
 	initialized bool
 }
 
-func NewCsvWriter(files []string) (CsvWriter, error) {
+func NewCsvWriter(files []string, sep string) (CsvWriter, error) {
 	f := []*os.File{}
 
 	for _, path := range files {
@@ -31,13 +32,14 @@ func NewCsvWriter(files []string) (CsvWriter, error) {
 
 	return CsvWriter{
 		files: f,
+		sep:   sep,
 	}, nil
 }
 
 func (w *CsvWriter) Write(tables *Tables) error {
 	if !w.initialized {
 		for i := range tables.Headers {
-			_, err := fmt.Fprintln(w.files[i], strings.Join(tables.Headers[i], ","))
+			_, err := fmt.Fprintln(w.files[i], strings.Join(tables.Headers[i], w.sep))
 			if err != nil {
 				return err
 			}
@@ -52,7 +54,7 @@ func (w *CsvWriter) Write(tables *Tables) error {
 			for i, v := range row {
 				fmt.Fprint(&w.builder, v)
 				if i < len(row)-1 {
-					fmt.Fprint(&w.builder, ",")
+					fmt.Fprint(&w.builder, w.sep)
 				}
 			}
 			fmt.Fprint(&w.builder, "\n")

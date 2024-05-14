@@ -41,6 +41,8 @@ type table struct {
 }
 
 type ObserversDef struct {
+	Parameters      string
+	CsvSeparator    string
 	TimeSeriesPlots []timeSeriesPlot
 	Tables          []table
 }

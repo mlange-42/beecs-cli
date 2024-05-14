@@ -1,12 +1,6 @@
 {
-    "TimeSeriesPlots": [
-        {
-            "Observer": "obs.WorkerCohorts",
-            "Params": {
-                "Cumulative": false
-            }
-        }
-    ],
+    "CsvSeparator": ";",
+    "Parameters": "out/Parameters.csv",
     "Tables": [
         {
             "Observer": "obs.WorkerCohorts",
@@ -14,6 +8,14 @@
                 "Cumulative": false
             },
             "File": "out/WorkerCohorts.csv"
+        }
+    ],
+    "TimeSeriesPlots": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "Params": {
+                "Cumulative": false
+            }
         }
     ]
 }

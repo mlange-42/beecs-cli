@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 	"time"
 
 	amod "github.com/mlange-42/arche-model/model"
@@ -40,22 +41,27 @@ func main() {
 	}
 
 	numSets := exp.ParameterSets()
+	runs := numSets * 100
 
 	if threads <= 1 {
-		runSequential(&p, &exp, &observers, numSets)
+		runSequential(&p, &exp, &observers, runs)
 	} else {
-		runParallel(&p, &exp, &observers, numSets, threads)
+		runParallel(&p, &exp, &observers, runs, threads)
 	}
 }
 
 func runSequential(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, totalRuns int) {
 	m := amod.New()
 
-	files := []string{}
+	paramsFile := observers.Parameters
+	if len(paramsFile) == 0 {
+		paramsFile = "parameters.csv"
+	}
+	files := []string{paramsFile}
 	for _, t := range observers.Tables {
 		files = append(files, t.File)
 	}
-	writer, err := util.NewCsvWriter(files)
+	writer, err := util.NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,11 +97,15 @@ func runParallel(p params.Params, exp *experiment.Experiment, observers *util.Ob
 	}
 	close(jobs)
 
-	files := []string{}
+	paramsFile := observers.Parameters
+	if len(paramsFile) == 0 {
+		paramsFile = "parameters.csv"
+	}
+	files := []string{paramsFile}
 	for _, t := range observers.Tables {
 		files = append(files, t.File)
 	}
-	writer, err := util.NewCsvWriter(files)
+	writer, err := util.NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -130,6 +140,7 @@ func worker(jobs <-chan int, results chan<- util.Tables, p params.Params, exp *e
 func runModel(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, m *amod.Model, idx int, parallel bool) util.Tables {
 	model.Default(p, m)
 	exp.ApplyValues(idx, &m.World)
+	values := exp.Values(idx)
 
 	m.AddSystem(&system.FixedTermination{Steps: 365})
 
@@ -140,8 +151,16 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 
 	result := util.Tables{
 		Index:   idx,
-		Headers: make([][]string, len(obs.Tables)),
-		Data:    make([][][]float64, len(obs.Tables)),
+		Headers: make([][]string, len(obs.Tables)+1),
+		Data:    make([][][]float64, len(obs.Tables)+1),
+	}
+
+	result.Headers[0] = []string{"Run"}
+	result.Data[0] = [][]float64{{float64(idx)}}
+	for _, v := range values {
+		result.Headers[0] = append(result.Headers[0], v.Parameter)
+		floatValue := toFloat(v.Value)
+		result.Data[0][0] = append(result.Data[0][0], floatValue)
 	}
 
 	for i, t := range obs.Tables {
@@ -150,7 +169,7 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 			h[0] = "Run"
 			h[1] = "Ticks"
 			copy(h[2:], header)
-			result.Headers[i] = h
+			result.Headers[i+1] = h
 		}
 		t.Callback = func(step int, row []float64) {
 			data := make([]float64, len(row)+2)
@@ -158,7 +177,7 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 			data[1] = float64(step)
 			copy(data[2:], row)
 
-			result.Data[i] = append(result.Data[i], data)
+			result.Data[i+1] = append(result.Data[i+1], data)
 		}
 		m.AddSystem(t)
 	}
@@ -178,6 +197,30 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 	}
 
 	return result
+}
+
+func toFloat(v any) float64 {
+	var floatValue float64
+	switch vv := v.(type) {
+	case float64:
+		floatValue = vv
+	case float32:
+		floatValue = float64(vv)
+	case int:
+		floatValue = float64(vv)
+	case int32:
+		floatValue = float64(vv)
+	case int64:
+		floatValue = float64(vv)
+	case bool:
+		if vv {
+			floatValue = 1
+		}
+	default:
+		panic(fmt.Sprintf("unsupported parameter type %s", reflect.TypeOf(vv).String()))
+	}
+
+	return floatValue
 }
 
 func ExperimentFromJSON(path string) (experiment.Experiment, error) {
