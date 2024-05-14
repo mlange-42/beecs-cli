@@ -17,19 +17,19 @@ go install github.com/mlange-42/beecs-cli@latest
 Get CLI help like this:
 
 ```
-beecs-cli
+beecs-cli -h
 ```
 
 A single, slowed down run od the base example:
 
 ```
-beecs-cli -s 30 -d _examples/base -p parameters.json -o observers.json
+beecs-cli -s 30 -d _examples/base
 ```
 
 Run the full base example with 10 runs per parameter set:
 
 ```
-beecs-cli -r 10 -d _examples/base -p parameters.json -o observers.json -e experiment.json
+beecs-cli -r 10 -d _examples/base -e experiment.json
 ```
 
 See the [examples](https://github.com/mlange-42/beecs-cli/tree/main/_examples) for the format of the required JSON files.

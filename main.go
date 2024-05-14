@@ -15,7 +15,8 @@ import (
 
 func main() {
 	if err := RootCommand().Execute(); err != nil {
-		fmt.Printf("%s\n", err.Error())
+		fmt.Printf("ERROR: %s\n", err.Error())
+		fmt.Print("\nRun `beecs-cli -h` for help!\n\n")
 		os.Exit(1)
 	}
 }
@@ -23,7 +24,7 @@ func main() {
 // RootCommand sets up the CLI
 func RootCommand() *cobra.Command {
 	var dir string
-	var paramsFile string
+	var paramFiles []string
 	var expFile string
 	var obsFile string
 	var tps float64
@@ -41,18 +42,21 @@ func RootCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if paramsFile == "" {
+			if len(paramFiles) == 0 {
 				_ = cmd.Help()
 				os.Exit(0)
 			}
 
 			p := params.Default()
-			err := util.ParametersFromFile(path.Join(dir, paramsFile), &p)
-			if err != nil {
-				return err
+			for _, f := range paramFiles {
+				err := util.ParametersFromFile(path.Join(dir, f), &p)
+				if err != nil {
+					return err
+				}
 			}
 
 			var exp experiment.Experiment
+			var err error
 			if expFile != "" {
 				exp, err = util.ExperimentFromFile(path.Join(dir, expFile))
 				if err != nil {
@@ -96,9 +100,9 @@ func RootCommand() *cobra.Command {
 		},
 	}
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
-	root.Flags().StringVarP(&paramsFile, "parameters", "p", "", "Parameters file")
-	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file")
-	root.Flags().StringVarP(&obsFile, "observers", "o", "", "Observers file")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{"parameters.json"}, "Parameter files, processed in the given order")
+	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
+	root.Flags().StringVarP(&obsFile, "observers", "o", "observers.json", "Observers file")
 	root.Flags().Float64VarP(&tps, "tps", "s", 0, "Limit ticks per second")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
