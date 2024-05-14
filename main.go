@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path"
 	"runtime"
 	"time"
 
@@ -38,6 +39,7 @@ func ExperimentFromJSON(path string) (experiment.Experiment, error) {
 
 // RootCommand sets up the CLI
 func RootCommand() *cobra.Command {
+	var dir string
 	var paramsFile string
 	var expFile string
 	var obsFile string
@@ -61,21 +63,21 @@ func RootCommand() *cobra.Command {
 			}
 
 			p := params.Default()
-			err := p.FromJSON(paramsFile)
+			err := p.FromJSON(path.Join(dir, paramsFile))
 			if err != nil {
 				return err
 			}
 
 			var exp experiment.Experiment
 			if expFile != "" {
-				exp, err = ExperimentFromJSON(expFile)
+				exp, err = ExperimentFromJSON(path.Join(dir, expFile))
 				if err != nil {
 					return err
 				}
 			}
 			var observers util.ObserversDef
 			if obsFile != "" {
-				observers, err = util.ObserversDefFromJSON(obsFile)
+				observers, err = util.ObserversDefFromJSON(path.Join(dir, obsFile))
 				if err != nil {
 					return err
 				}
@@ -91,18 +93,19 @@ func RootCommand() *cobra.Command {
 			}
 
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, totalRuns, tps)
+				return util.RunSequential(&p, &exp, &observers, dir, totalRuns, tps)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, totalRuns, threads, tps)
+				return util.RunParallel(&p, &exp, &observers, dir, totalRuns, threads, tps)
 			}
 		},
 	}
-	root.Flags().StringVarP(&paramsFile, "parameters", "p", "", "Parameters file.")
-	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file.")
-	root.Flags().StringVarP(&obsFile, "observers", "o", "", "Observers file.")
-	root.Flags().Float64VarP(&tps, "tps", "s", 0, "Limit ticks per second.")
-	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads.")
-	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set.")
+	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
+	root.Flags().StringVarP(&paramsFile, "parameters", "p", "", "Parameters file")
+	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file")
+	root.Flags().StringVarP(&obsFile, "observers", "o", "", "Observers file")
+	root.Flags().Float64VarP(&tps, "tps", "s", 0, "Limit ticks per second")
+	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
+	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 
 	return root
 }

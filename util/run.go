@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"log"
+	"path"
 	"reflect"
 
 	amod "github.com/mlange-42/arche-model/model"
@@ -12,7 +13,7 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
-func RunSequential(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int, tps float64) error {
+func RunSequential(p params.Params, exp *experiment.Experiment, observers *ObserversDef, dir string, totalRuns int, tps float64) error {
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -20,10 +21,12 @@ func RunSequential(p params.Params, exp *experiment.Experiment, observers *Obser
 	paramsFile := observers.Parameters
 	if len(paramsFile) == 0 {
 		paramsFile = ""
+	} else {
+		paramsFile = path.Join(dir, paramsFile)
 	}
 	files := []string{paramsFile}
 	for _, t := range observers.Tables {
-		files = append(files, t.File)
+		files = append(files, path.Join(dir, t.File))
 	}
 	writer, err := NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
@@ -42,7 +45,7 @@ func RunSequential(p params.Params, exp *experiment.Experiment, observers *Obser
 	return writer.Close()
 }
 
-func RunParallel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int, threads int, tps float64) error {
+func RunParallel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, dir string, totalRuns int, threads int, tps float64) error {
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
@@ -62,10 +65,12 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 	paramsFile := observers.Parameters
 	if len(paramsFile) == 0 {
 		paramsFile = ""
+	} else {
+		paramsFile = path.Join(dir, paramsFile)
 	}
 	files := []string{paramsFile}
 	for _, t := range observers.Tables {
-		files = append(files, t.File)
+		files = append(files, path.Join(dir, t.File))
 	}
 	writer, err := NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
