@@ -9,6 +9,8 @@ import (
 
 	amod "github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/system"
+	"github.com/mlange-42/arche-pixel/window"
+	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/params"
@@ -18,6 +20,7 @@ import (
 func main() {
 	paramsFile := "_examples/base/parameters.json"
 	expFile := "_examples/base/experiment.json"
+	obsFile := "_examples/base/observers.json"
 
 	p := params.Default()
 	err := p.FromJSON(paramsFile)
@@ -26,6 +29,10 @@ func main() {
 	}
 
 	exp, err := ExperimentFromJSON(expFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	observers, err := util.ObserversDefFromJSON(obsFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,8 +47,22 @@ func main() {
 
 		m.AddSystem(&system.FixedTermination{Steps: 365})
 
+		obs, err := observers.CreateObservers()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, t := range obs.Tables {
+			m.AddSystem(t)
+		}
+		for _, p := range obs.TimeSeriesPlots {
+			m.AddUISystem(p)
+		}
+
 		fmt.Printf("Run %d: %v\n", i, exp.Values(i))
-		m.Run()
+
+		window.Run(m)
+		//m.Run()
 	}
 }
 

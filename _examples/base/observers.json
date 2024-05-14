@@ -1,0 +1,18 @@
+{
+    "TimeSeriesPlots": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "Params": {
+                "Cumulative": false
+            }
+        }
+    ],
+    "Tables": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "Params": {
+                "Cumulative": false
+            }
+        }
+    ]
+}
