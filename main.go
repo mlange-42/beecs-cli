@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"runtime"
+	"strings"
 
 	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
@@ -28,6 +29,7 @@ func RootCommand() *cobra.Command {
 	var tps float64
 	var threads int
 	var runs int
+	var overwrite []string
 
 	root := &cobra.Command{
 		Use:           "beecs-cli",
@@ -74,10 +76,22 @@ func RootCommand() *cobra.Command {
 				threads = 1
 			}
 
+			overwriteParams := make([]experiment.ParameterValue, len(overwrite))
+			for i, s := range overwrite {
+				parts := strings.Split(s, "=")
+				if len(parts) != 2 {
+					return fmt.Errorf("invalid syntax in option --overwrite (-x)")
+				}
+				overwriteParams[i] = experiment.ParameterValue{
+					Parameter: parts[0],
+					Value:     parts[1],
+				}
+			}
+
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, dir, totalRuns, tps)
+				return util.RunSequential(&p, &exp, &observers, overwriteParams, dir, totalRuns, tps)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, dir, totalRuns, threads, tps)
+				return util.RunParallel(&p, &exp, &observers, overwriteParams, dir, totalRuns, threads, tps)
 			}
 		},
 	}
@@ -88,6 +102,7 @@ func RootCommand() *cobra.Command {
 	root.Flags().Float64VarP(&tps, "tps", "s", 0, "Limit ticks per second")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
+	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
 	return root
 }
