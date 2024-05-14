@@ -22,6 +22,8 @@ func main() {
 	expFile := "_examples/base/experiment.json"
 	obsFile := "_examples/base/observers.json"
 
+	threads := 6
+
 	p := params.Default()
 	err := p.FromJSON(paramsFile)
 	if err != nil {
@@ -39,30 +41,82 @@ func main() {
 
 	numSets := exp.ParameterSets()
 
+	if threads <= 1 {
+		runSequential(&p, &exp, &observers, numSets)
+	} else {
+		runParallel(&p, &exp, &observers, numSets, threads)
+	}
+}
+
+func runSequential(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, totalRuns int) {
+	m := amod.New()
+	for j := 0; j < totalRuns; j++ {
+		runModel(p, exp, observers, m, j, false)
+	}
+}
+
+func runParallel(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, totalRuns int, threads int) {
+	// Channel for sending jobs to workers (buffered!).
+	jobs := make(chan int, totalRuns)
+	// Channel for retrieving results / done messages (buffered!).
+	results := make(chan int, totalRuns)
+
+	// Start the workers.
+	for w := 0; w < threads; w++ {
+		go worker(jobs, results, p, exp, observers)
+	}
+
+	// Send the jobs. Does not block due to buffered channel.
+	for j := 0; j < totalRuns; j++ {
+		jobs <- j
+	}
+	close(jobs)
+
+	// Collect done messages.
+	for j := 0; j < totalRuns; j++ {
+		<-results
+	}
+}
+
+func worker(jobs <-chan int, results chan<- int, p params.Params, exp *experiment.Experiment, observers *util.ObserversDef) {
 	m := amod.New()
 
-	for i := 0; i < numSets; i++ {
-		model.Default(&p, m)
-		exp.ApplyValues(i, &m.World)
+	// Process incoming jobs.
+	for j := range jobs {
+		// Run the model.
+		runModel(p, exp, observers, m, j, true)
+		// Send done message. Does not block due to buffered channel.
+		results <- j
+	}
+}
 
-		m.AddSystem(&system.FixedTermination{Steps: 365})
+func runModel(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, m *amod.Model, idx int, parallel bool) {
+	model.Default(p, m)
+	exp.ApplyValues(idx, &m.World)
 
-		obs, err := observers.CreateObservers()
-		if err != nil {
-			log.Fatal(err)
-		}
+	m.AddSystem(&system.FixedTermination{Steps: 365})
 
-		for _, t := range obs.Tables {
-			m.AddSystem(t)
-		}
+	obs, err := observers.CreateObservers()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, t := range obs.Tables {
+		m.AddSystem(t)
+	}
+
+	if !parallel {
 		for _, p := range obs.TimeSeriesPlots {
 			m.AddUISystem(p)
 		}
+	}
 
-		fmt.Printf("Run %d: %v\n", i, exp.Values(i))
+	fmt.Printf("Run %d: %v\n", idx, exp.Values(idx))
 
+	if parallel {
+		m.Run()
+	} else {
 		window.Run(m)
-		//m.Run()
 	}
 }
 
