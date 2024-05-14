@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -55,7 +56,13 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 			return Observers{}, fmt.Errorf("observer type '%s' is not registered", p.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if err := json.Unmarshal(p.Params.Bytes, &observerVal); err != nil {
+		if len(p.Params.Bytes) == 0 {
+			p.Params.Bytes = []byte("{}")
+		}
+
+		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&observerVal); err != nil {
 			return Observers{}, err
 		}
 		obsCast, ok := observerVal.(observer.Row)
@@ -86,7 +93,12 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 			return Observers{}, fmt.Errorf("observer type '%s' is not registered", t.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if err := json.Unmarshal(t.Params.Bytes, &observerVal); err != nil {
+		if len(t.Params.Bytes) == 0 {
+			t.Params.Bytes = []byte("{}")
+		}
+		decoder := json.NewDecoder(bytes.NewReader(t.Params.Bytes))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&observerVal); err != nil {
 			return Observers{}, err
 		}
 		obsCast, ok := observerVal.(observer.Row)

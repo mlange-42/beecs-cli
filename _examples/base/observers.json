@@ -4,9 +4,6 @@
     "Tables": [
         {
             "Observer": "obs.WorkerCohorts",
-            "Params": {
-                "Cumulative": false
-            },
             "File": "out/WorkerCohorts.csv"
         }
     ],
@@ -14,8 +11,16 @@
         {
             "Observer": "obs.WorkerCohorts",
             "Params": {
-                "Cumulative": false
+                "Cumulative": true
             },
+            "MaxRows": 730
+        },
+        {
+            "Observer": "obs.Stores",
+            "Params": {
+                "PollenFactor": 20
+            },
+            "Columns": ["Honey", "Pollen x20"],
             "MaxRows": 730
         }
     ]
