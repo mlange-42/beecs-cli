@@ -1,5 +1,9 @@
 # beecs-cli
 
+[![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/beecs-cli/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/beecs-cli/actions/workflows/tests.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/beecs-cli)](https://goreportcard.com/report/github.com/mlange-42/beecs-cli)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/beecs-cli)
+
 Command line interface for the [beecs](https://github.com/mlange-42/beecs) honeybee model.
 
 ## Purpose
