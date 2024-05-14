@@ -15,7 +15,8 @@
             "Observer": "obs.WorkerCohorts",
             "Params": {
                 "Cumulative": false
-            }
+            },
+            "MaxRows": 730
         }
     ]
 }

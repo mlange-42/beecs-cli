@@ -1,4 +1,7 @@
 {
+    "Termination": {
+        "MaxTicks": 365
+    },
     "InitialPopulation": {
         "Count": 25000
     },
