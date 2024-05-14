@@ -34,12 +34,15 @@ type timeSeriesPlot struct {
 }
 
 type table struct {
+	File           string
 	Observer       string
 	Params         entry
 	UpdateInterval int
 }
 
 type ObserversDef struct {
+	Parameters      string
+	CsvSeparator    string
 	TimeSeriesPlots []timeSeriesPlot
 	Tables          []table
 }
