@@ -10,21 +10,14 @@ import (
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
-	"github.com/pelletier/go-toml/v2/unstable"
 )
 
 type entry struct {
 	Bytes []byte
-	Node  *unstable.Node
 }
 
 func (e *entry) UnmarshalJSON(jsonData []byte) error {
 	e.Bytes = jsonData
-	return nil
-}
-
-func (e *entry) UnmarshalTOML(value *unstable.Node) error {
-	e.Node = value
 	return nil
 }
 
