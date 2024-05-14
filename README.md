@@ -2,6 +2,12 @@
 
 Command line interface for the [beecs](https://github.com/mlange-42/beecs) honeybee model.
 
+## Purpose
+
+* Model parametrization from JSON files.
+* Systematic, parallel simulations with parameter variation, configured with JSON.
+* Running single simulations with various real-time visualizations.
+
 ## Installation
 
 There are currently no precompiled binaries provided.
@@ -32,4 +38,70 @@ Run the full base example with parameter variation and 10 runs per parameter set
 beecs-cli -r 10 -d _examples/base -e experiment.json
 ```
 
-See the [examples](https://github.com/mlange-42/beecs-cli/tree/main/_examples) for the format of the required JSON files.
+Print all default parameters in the tool's input format:
+
+```
+beecs-cli parameters
+```
+
+### Input files
+
+All file locations are relative to the working directory given by `-d` (defaults to the current directory).
+
+One or more **parameter files** are required. Entries in those files overwrite the default parameters.
+The default is file `parameters.json` in the working directory. Here is an example:
+
+```json
+{
+    "Termination": {
+        "MaxTicks": 365
+    },
+    "InitialPopulation": {
+        "Count": 25000
+    }
+}
+```
+
+For any kind of output, an **observers file** is required.
+It specifies which observers for visualizations or file output should be used.
+The default is file `parameters.json` in the working directory. Here is an example:
+
+```json
+{
+    "Parameters": "out/Parameters.csv",
+    "Tables": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "File": "out/WorkerCohorts.csv"
+        }
+    ],
+}
+```
+
+These files are sufficient for single simulations with visual of file output.
+
+With a further **experiment file**, parameters can be systematically varied in various ways.
+Here is an example:
+
+```json
+[
+    {
+        "Parameter": "params.Nursing.MaxBroodNurseRatio",
+        "SequenceFloatRange": {
+            "Min": 2.0,
+            "Max": 4.0,
+            "Values": 11
+        }
+    },
+    {
+        "Parameter": "params.Nursing.ForagerNursingContribution",
+        "SequenceFloatValues": {
+            "Values": [0, 0.25, 0.5]
+        }
+    }
+]
+```
+
+> Note: The prefix `params.` is required to unambiguously identify the type of the parameter group to modify.
+
+See also the [examples](https://github.com/mlange-42/beecs-cli/tree/main/_examples) for the format of the required JSON files.
