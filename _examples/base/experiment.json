@@ -1,12 +1,16 @@
 [
     {
         "Parameter": "params.Nursing.MaxBroodNurseRatio",
-        "Type": "sequence-range",
-        "FloatParams": [2, 3, 3]
+        "SequenceFloatRange": {
+            "Min": 2,
+            "Max": 3,
+            "Values": 3
+        }
     },
     {
         "Parameter": "params.Nursing.ForagerNursingContribution",
-        "Type": "sequence-range",
-        "FloatParams": [0.0, 0.5, 3]
+        "SequenceFloatValues": {
+            "Values": [0, 0.25, 0.5]
+        }
     }
 ]
