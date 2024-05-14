@@ -24,9 +24,9 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libgl1-mesa-dev xorg-dev
           go get ./...
-      - name: Build WebAssembly
+      - name: Build executable
         run: |
-          go build test/main .
+          go build -o test/main .
 
   test:
     name: Run tests
