@@ -13,7 +13,14 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
-func RunSequential(p params.Params, exp *experiment.Experiment, observers *ObserversDef, dir string, totalRuns int, tps float64) error {
+func RunSequential(
+	p params.Params,
+	exp *experiment.Experiment,
+	observers *ObserversDef,
+	overwrite []experiment.ParameterValue,
+	dir string,
+	totalRuns int, tps float64,
+) error {
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -34,7 +41,10 @@ func RunSequential(p params.Params, exp *experiment.Experiment, observers *Obser
 	}
 
 	for j := 0; j < totalRuns; j++ {
-		result := runModel(p, exp, observers, m, j, false)
+		result, err := runModel(p, exp, observers, overwrite, m, j, false)
+		if err != nil {
+			return err
+		}
 		err = writer.Write(&result)
 		if err != nil {
 			return err
@@ -45,7 +55,14 @@ func RunSequential(p params.Params, exp *experiment.Experiment, observers *Obser
 	return writer.Close()
 }
 
-func RunParallel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, dir string, totalRuns int, threads int, tps float64) error {
+func RunParallel(
+	p params.Params,
+	exp *experiment.Experiment,
+	observers *ObserversDef,
+	overwrite []experiment.ParameterValue,
+	dir string,
+	totalRuns int, threads int, tps float64,
+) error {
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
@@ -53,7 +70,7 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 
 	// Start the workers.
 	for w := 0; w < threads; w++ {
-		go worker(jobs, results, p, exp, observers, tps)
+		go worker(jobs, results, p, exp, observers, overwrite, tps)
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
@@ -90,7 +107,7 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 	return writer.Close()
 }
 
-func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, tps float64) {
+func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, overwrite []experiment.ParameterValue, tps float64) {
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -98,15 +115,35 @@ func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experi
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		res := runModel(p, exp, observers, m, j, true)
+		res, err := runModel(p, exp, observers, overwrite, m, j, true)
+		if err != nil {
+			log.Fatal(err)
+		}
 		// Send done message. Does not block due to buffered channel.
 		results <- res
 	}
 }
 
-func runModel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, m *amod.Model, idx int, parallel bool) Tables {
+func runModel(
+	p params.Params,
+	exp *experiment.Experiment,
+	observers *ObserversDef,
+	overwrite []experiment.ParameterValue,
+	m *amod.Model,
+	idx int, parallel bool,
+) (Tables, error) {
 	model.Default(p, m)
-	exp.ApplyValues(idx, &m.World)
+	err := exp.ApplyValues(idx, &m.World)
+	if err != nil {
+		return Tables{}, err
+	}
+
+	for _, par := range overwrite {
+		if err = model.SetParameter(&m.World, par.Parameter, par.Value); err != nil {
+			return Tables{}, err
+		}
+	}
+
 	values := exp.Values(idx)
 
 	obs, err := observers.CreateObservers()
@@ -159,7 +196,7 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *ObserversD
 		window.Run(m)
 	}
 
-	return result
+	return result, nil
 }
 
 func toFloat(v any) float64 {
