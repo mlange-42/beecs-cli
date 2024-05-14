@@ -1,0 +1,116 @@
+name: Test Release
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build-linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libgl1-mesa-dev xorg-dev
+          go get ./...
+      - name: Build
+        run: GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          tar -czf beecs-cli.tar.gz beecs-cli
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beecs-cli-linux-amd64.tar.gz
+          path: beecs-cli.tar.gz
+
+  build-windows:
+    name: Windows build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-mingw-w64
+          go get ./...
+      - name: Build
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r beecs-cli.zip beecs-cli.exe
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beecs-cli-windows-amd64.zip
+          path: beecs-cli.zip
+
+  build-macos-arm64:
+    name: MacOS arm64 build
+    runs-on: macos-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Build
+        run: GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r beecs-cli.zip beecs-cli
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beecs-cli-macos-arm64.zip
+          path: beecs-cli.zip
+
+  build-macos-amd64:
+    name: MacOS amd64 build
+    runs-on: macos-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Build
+        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r beecs-cli.zip beecs-cli
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: beecs-cli-macos-amd64.zip
+          path: beecs-cli.zip
