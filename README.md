@@ -17,7 +17,7 @@ go install github.com/mlange-42/beecs-cli@latest
 Get CLI help like this:
 
 ```
-beecs-cli
+beecs-cli -h
 ```
 
 A single, slowed down run od the base example:
