@@ -23,7 +23,7 @@ jobs:
           sudo apt-get install -y libgl1-mesa-dev xorg-dev
           go get ./...
       - name: Build
-        run: GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build .
+        run: GOOS=linux GOARCH=amd64 go build .
       - name: Compress binaries
         run: |
           tar -czf beecs-cli.tar.gz beecs-cli
@@ -51,7 +51,7 @@ jobs:
       - name: Install dependencies
         run: go get ./...
       - name: Build
-        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 go build .
+        run: GOOS=windows GOARCH=amd64 go build .
       - name: Compress binaries
         run: |
           zip -r beecs-cli.zip beecs-cli.exe
@@ -77,7 +77,7 @@ jobs:
         with:
           go-version: '1.21.x'
       - name: Build
-        run: GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build .
+        run: GOOS=darwin GOARCH=arm64 go build .
       - name: Compress binaries
         run: |
           zip -r beecs-cli.zip beecs-cli
@@ -103,7 +103,7 @@ jobs:
         with:
           go-version: '1.21.x'
       - name: Build
-        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build .
+        run: GOOS=darwin GOARCH=amd64 go build .
       - name: Compress binaries
         run: |
           zip -r beecs-cli.zip beecs-cli
