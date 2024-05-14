@@ -12,12 +12,14 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
-func RunSequential(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int) {
+func RunSequential(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int, tps float64) error {
 	m := amod.New()
+	m.FPS = 30
+	m.TPS = tps
 
 	paramsFile := observers.Parameters
 	if len(paramsFile) == 0 {
-		paramsFile = "parameters.csv"
+		paramsFile = ""
 	}
 	files := []string{paramsFile}
 	for _, t := range observers.Tables {
@@ -25,25 +27,22 @@ func RunSequential(p params.Params, exp *experiment.Experiment, observers *Obser
 	}
 	writer, err := NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	for j := 0; j < totalRuns; j++ {
 		result := runModel(p, exp, observers, m, j, false)
 		err = writer.Write(&result)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		fmt.Printf("Run %5d/%d\n", j, totalRuns)
 	}
 
-	err = writer.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return writer.Close()
 }
 
-func RunParallel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int, threads int) {
+func RunParallel(p params.Params, exp *experiment.Experiment, observers *ObserversDef, totalRuns int, threads int, tps float64) error {
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
@@ -51,7 +50,7 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 
 	// Start the workers.
 	for w := 0; w < threads; w++ {
-		go worker(jobs, results, p, exp, observers)
+		go worker(jobs, results, p, exp, observers, tps)
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
@@ -62,7 +61,7 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 
 	paramsFile := observers.Parameters
 	if len(paramsFile) == 0 {
-		paramsFile = "parameters.csv"
+		paramsFile = ""
 	}
 	files := []string{paramsFile}
 	for _, t := range observers.Tables {
@@ -70,7 +69,7 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 	}
 	writer, err := NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	// Collect done messages.
@@ -78,19 +77,18 @@ func RunParallel(p params.Params, exp *experiment.Experiment, observers *Observe
 		result := <-results
 		err = writer.Write(&result)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		fmt.Printf("Run %5d/%d\n", result.Index, totalRuns)
 	}
 
-	err = writer.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return writer.Close()
 }
 
-func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef) {
+func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, tps float64) {
 	m := amod.New()
+	m.FPS = 30
+	m.TPS = tps
 
 	// Process incoming jobs.
 	for j := range jobs {

@@ -17,7 +17,12 @@ type CsvWriter struct {
 func NewCsvWriter(files []string, sep string) (CsvWriter, error) {
 	f := []*os.File{}
 
-	for _, path := range files {
+	for i, path := range files {
+		if i == 0 && path == "" {
+			f = append(f, nil)
+			continue
+		}
+
 		err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
 		if err != nil {
 			return CsvWriter{}, err
@@ -39,6 +44,9 @@ func NewCsvWriter(files []string, sep string) (CsvWriter, error) {
 func (w *CsvWriter) Write(tables *Tables) error {
 	if !w.initialized {
 		for i := range tables.Headers {
+			if i == 0 && w.files[i] == nil {
+				continue
+			}
 			_, err := fmt.Fprintln(w.files[i], strings.Join(tables.Headers[i], w.sep))
 			if err != nil {
 				return err
@@ -48,6 +56,9 @@ func (w *CsvWriter) Write(tables *Tables) error {
 	}
 
 	for i := range tables.Data {
+		if i == 0 && w.files[i] == nil {
+			continue
+		}
 		table := tables.Data[i]
 		w.builder.Reset()
 		for _, row := range table {
@@ -69,7 +80,10 @@ func (w *CsvWriter) Write(tables *Tables) error {
 }
 
 func (w *CsvWriter) Close() error {
-	for _, f := range w.files {
+	for i, f := range w.files {
+		if i == 0 && f == nil {
+			continue
+		}
 		if err := f.Close(); err != nil {
 			return err
 		}
