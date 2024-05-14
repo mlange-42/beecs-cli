@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/mlange-42/arche-model v0.8.0
 	github.com/mlange-42/arche-pixel v0.9.0
-	github.com/mlange-42/beecs v0.0.0-20240514112528-91f4d3f76dfe
+	github.com/mlange-42/beecs v0.0.0-20240514120350-673b644e6814
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 )
 
