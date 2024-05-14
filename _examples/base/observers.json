@@ -12,7 +12,8 @@
             "Observer": "obs.WorkerCohorts",
             "Params": {
                 "Cumulative": false
-            }
+            },
+            "File": "out/WorkerCohorts.csv"
         }
     ]
 }

@@ -34,6 +34,7 @@ type timeSeriesPlot struct {
 }
 
 type table struct {
+	File           string
 	Observer       string
 	Params         entry
 	UpdateInterval int

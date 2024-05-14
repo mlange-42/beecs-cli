@@ -50,8 +50,27 @@ func main() {
 
 func runSequential(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, totalRuns int) {
 	m := amod.New()
+
+	files := []string{}
+	for _, t := range observers.Tables {
+		files = append(files, t.File)
+	}
+	writer, err := util.NewCsvWriter(files)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for j := 0; j < totalRuns; j++ {
-		runModel(p, exp, observers, m, j, false)
+		result := runModel(p, exp, observers, m, j, false)
+		err = writer.Write(&result)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -59,7 +78,7 @@ func runParallel(p params.Params, exp *experiment.Experiment, observers *util.Ob
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
-	results := make(chan int, totalRuns)
+	results := make(chan util.Tables, totalRuns)
 
 	// Start the workers.
 	for w := 0; w < threads; w++ {
@@ -72,25 +91,43 @@ func runParallel(p params.Params, exp *experiment.Experiment, observers *util.Ob
 	}
 	close(jobs)
 
+	files := []string{}
+	for _, t := range observers.Tables {
+		files = append(files, t.File)
+	}
+	writer, err := util.NewCsvWriter(files)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Collect done messages.
 	for j := 0; j < totalRuns; j++ {
-		<-results
+		result := <-results
+		err = writer.Write(&result)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	err = writer.Close()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
-func worker(jobs <-chan int, results chan<- int, p params.Params, exp *experiment.Experiment, observers *util.ObserversDef) {
+func worker(jobs <-chan int, results chan<- util.Tables, p params.Params, exp *experiment.Experiment, observers *util.ObserversDef) {
 	m := amod.New()
 
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		runModel(p, exp, observers, m, j, true)
+		res := runModel(p, exp, observers, m, j, true)
 		// Send done message. Does not block due to buffered channel.
-		results <- j
+		results <- res
 	}
 }
 
-func runModel(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, m *amod.Model, idx int, parallel bool) {
+func runModel(p params.Params, exp *experiment.Experiment, observers *util.ObserversDef, m *amod.Model, idx int, parallel bool) util.Tables {
 	model.Default(p, m)
 	exp.ApplyValues(idx, &m.World)
 
@@ -101,7 +138,28 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 		log.Fatal(err)
 	}
 
-	for _, t := range obs.Tables {
+	result := util.Tables{
+		Index:   idx,
+		Headers: make([][]string, len(obs.Tables)),
+		Data:    make([][][]float64, len(obs.Tables)),
+	}
+
+	for i, t := range obs.Tables {
+		t.HeaderCallback = func(header []string) {
+			h := make([]string, len(header)+2)
+			h[0] = "Run"
+			h[1] = "Ticks"
+			copy(h[2:], header)
+			result.Headers[i] = h
+		}
+		t.Callback = func(step int, row []float64) {
+			data := make([]float64, len(row)+2)
+			data[0] = float64(idx)
+			data[1] = float64(step)
+			copy(data[2:], row)
+
+			result.Data[i] = append(result.Data[i], data)
+		}
 		m.AddSystem(t)
 	}
 
@@ -118,6 +176,8 @@ func runModel(p params.Params, exp *experiment.Experiment, observers *util.Obser
 	} else {
 		window.Run(m)
 	}
+
+	return result
 }
 
 func ExperimentFromJSON(path string) (experiment.Experiment, error) {
