@@ -86,6 +86,9 @@ func RootCommand() *cobra.Command {
 				numSets = 1
 			}
 			totalRuns := numSets * runs
+			if totalRuns == 1 {
+				threads = 1
+			}
 
 			if threads <= 1 {
 				return util.RunSequential(&p, &exp, &observers, totalRuns, tps)
