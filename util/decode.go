@@ -21,17 +21,13 @@ func ParametersFromFile(path string, params *params.DefaultParams) error {
 	return decoder.Decode(params)
 }
 
-type variations struct {
-	Experiment []experiment.ParameterVariation
-}
-
 func ExperimentFromFile(path string) (experiment.Experiment, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return experiment.Experiment{}, err
 	}
 
-	var exp variations
+	var exp []experiment.ParameterVariation
 
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()
@@ -39,7 +35,7 @@ func ExperimentFromFile(path string) (experiment.Experiment, error) {
 		return experiment.Experiment{}, err
 	}
 
-	return experiment.New(exp.Experiment, rand.New(rand.NewSource(uint64(time.Now().UnixNano()))))
+	return experiment.New(exp, rand.New(rand.NewSource(uint64(time.Now().UnixNano()))))
 }
 
 func ObserversDefFromFile(path string) (ObserversDef, error) {
