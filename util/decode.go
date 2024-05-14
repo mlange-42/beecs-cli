@@ -51,5 +51,9 @@ func ObserversDefFromFile(path string) (ObserversDef, error) {
 		return obs, err
 	}
 
+	if obs.CsvSeparator == "" {
+		obs.CsvSeparator = ","
+	}
+
 	return obs, nil
 }

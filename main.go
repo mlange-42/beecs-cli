@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -34,8 +35,8 @@ func RootCommand() *cobra.Command {
 
 	root := &cobra.Command{
 		Use:           "beecs-cli",
-		Short:         "beecs-cli provides a command line interface for the beecs model",
-		Long:          `beecs-cli provides a command line interface for the beecs model`,
+		Short:         "beecs-cli provides a command line interface for the beecs model.",
+		Long:          `beecs-cli provides a command line interface for the beecs model.`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
@@ -107,6 +108,46 @@ func RootCommand() *cobra.Command {
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
+
+	root.AddCommand(ParametersCommand())
+
+	return root
+}
+
+func ParametersCommand() *cobra.Command {
+	var dir string
+	var paramFiles []string
+
+	root := &cobra.Command{
+		Use:           "parameters",
+		Short:         "Prints all default model parameters in JSON format.",
+		Long:          `Prints all default model parameters in JSON format.`,
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			p := params.Default()
+			for _, f := range paramFiles {
+				err := util.ParametersFromFile(path.Join(dir, f), &p)
+				if err != nil {
+					return err
+				}
+			}
+
+			js, err := json.MarshalIndent(&p, "", "    ")
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(string(js))
+
+			return nil
+		},
+	}
+	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{}, "Optional parameter files, processed in the given order")
 
 	return root
 }
