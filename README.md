@@ -23,13 +23,13 @@ beecs-cli
 A single, slowed down run od the base example:
 
 ```
-beecs-cli -s 30 -p _examples/base/parameters.json -o _examples/base/observers.json
+beecs-cli -s 30 -d _examples/base -p parameters.json -o observers.json
 ```
 
 Run the full base example with 10 runs per parameter set:
 
 ```
-beecs-cli -r 10 -p _examples/base/parameters.json -o _examples/base/observers.json -e _examples/base/experiment.json
+beecs-cli -r 10 -d _examples/base -p parameters.json -o observers.json -e experiment.json
 ```
 
 See the [examples](https://github.com/mlange-42/beecs-cli/tree/main/_examples) for the format of the required JSON files.
