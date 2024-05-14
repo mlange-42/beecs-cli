@@ -75,3 +75,23 @@ jobs:
       #  run: staticcheck ./...
       - name: Lint with ineffassign
         run: ineffassign ./...
+
+  examples:
+    name: Run examples
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.21.x'
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libgl1-mesa-dev xorg-dev xvfb
+        go get ./...
+    - name: Run examples
+      run: |
+        xvfb-run go run . -s 120 -d _examples/base
+        go run -r 5 -d _examples/base -e experiment.json
