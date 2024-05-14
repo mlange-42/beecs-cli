@@ -20,13 +20,13 @@ Get CLI help like this:
 beecs-cli -h
 ```
 
-A single, slowed down run od the base example:
+A single, slowed down run of the base example, with live plots:
 
 ```
 beecs-cli -s 30 -d _examples/base
 ```
 
-Run the full base example with 10 runs per parameter set:
+Run the full base example with parameter variation and 10 runs per parameter set:
 
 ```
 beecs-cli -r 10 -d _examples/base -e experiment.json
