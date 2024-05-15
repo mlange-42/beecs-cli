@@ -1,0 +1,61 @@
+[
+    {
+        "DistToColony": 500,
+        "ConstantPatch": {
+            "Nectar": 20,
+            "Pollen": 1,
+            "NectarConcentration": 1.5,
+            "DetectionProbability": 0.2
+        }
+    },
+    {
+        "DistToColony": 1500,
+        "SeasonalPatch": {
+            "MaxNectar": 20,
+            "MaxPollen": 1,
+            "NectarConcentration": 1.5,
+            "DetectionProbability": 0.2,
+            "SeasonShift": 100
+        }
+    },
+    {
+        "DistToColony": 1500,
+        "SeasonalPatch": {
+            "MaxNectar": 20,
+            "MaxPollen": 1,
+            "NectarConcentration": 1.5,
+            "DetectionProbability": 0.2,
+            "SeasonShift": 0
+        }
+    },
+    {
+        "DistToColony": 1500,
+        "ScriptedPatch": {
+            "Nectar": [[0, 0], [120, 10], [220, 0]],
+            "Pollen": [[0, 0], [120, 0.6], [220, 0]],
+            "NectarConcentration": [[0, 1.5]],
+            "DetectionProbability": [[0, 0.2]],
+            "Interpolation": 0
+        }
+    },
+    {
+        "DistToColony": 1500,
+        "ScriptedPatch": {
+            "Nectar": [[0, 0], [100, 0], [120, 15], [200, 15], [220, 0]],
+            "Pollen": [[0, 0], [100, 0], [120, 0.8], [200, 0.8], [220, 0]],
+            "NectarConcentration": [[0, 1.5]],
+            "DetectionProbability": [[0, 0.2]],
+            "Interpolation": 1
+        }
+    },
+    {
+        "DistToColony": 1500,
+        "ScriptedPatch": {
+            "Nectar": [[0, 5], [100, 12], [150, 6], [200, 8], [300, 15], [340, 5]],
+            "Pollen": [[0, 0]],
+            "NectarConcentration": [[0, 1.5]],
+            "DetectionProbability": [[0, 0.2]],
+            "Interpolation": 1
+        }
+    }
+]

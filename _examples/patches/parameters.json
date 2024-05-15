@@ -1,0 +1,9 @@
+{
+    "Termination": {
+        "MaxTicks": 3650
+    },
+    "InitialPatches": {
+        "File": "patches.json",
+        "Patches": []
+    }
+}

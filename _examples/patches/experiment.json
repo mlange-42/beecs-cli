@@ -1,0 +1,9 @@
+[
+    {
+        "Parameter": "params.Nursing.ForagerNursingContribution",
+        "RandomFloatRange": {
+            "Min": 0.0,
+            "Max": 0.5
+        }
+    }
+]

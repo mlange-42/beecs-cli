@@ -55,6 +55,8 @@ github.com/mlange-42/beecs v0.1.1-0.20240515123818-7797eb0b8a11 h1:kZ+6DjnlCSoDE
 github.com/mlange-42/beecs v0.1.1-0.20240515123818-7797eb0b8a11/go.mod h1:4USO5e+eeIkKe6oVbhhBpbRIMYWsrgD0d+Fu/aEHBkY=
 github.com/mlange-42/beecs v0.1.1-0.20240515183711-fa87a0a5fdd1 h1:JS1px0sLswvheEbW7y/t/i9V7P+FB29gUy/d8w+u4uA=
 github.com/mlange-42/beecs v0.1.1-0.20240515183711-fa87a0a5fdd1/go.mod h1:4USO5e+eeIkKe6oVbhhBpbRIMYWsrgD0d+Fu/aEHBkY=
+github.com/mlange-42/beecs v0.1.1-0.20240515220635-14fb796648eb h1:s0BTpurjAcDKolESZz3lJslBdYsok/0X7DgCqtfedRA=
+github.com/mlange-42/beecs v0.1.1-0.20240515220635-14fb796648eb/go.mod h1:4USO5e+eeIkKe6oVbhhBpbRIMYWsrgD0d+Fu/aEHBkY=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
