@@ -9,8 +9,9 @@
     },
     {
         "Parameter": "params.Nursing.ForagerNursingContribution",
-        "SequenceFloatValues": {
-            "Values": [0, 0.25, 0.5]
+        "RandomFloatRange": {
+            "Min": 0.0,
+            "Max": 0.5
         }
     }
 ]
