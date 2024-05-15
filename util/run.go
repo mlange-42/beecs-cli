@@ -46,7 +46,7 @@ func RunSequential(
 	if seed > 0 {
 		rng = rand.New(rand.NewSource(uint64(seed)))
 	} else {
-		rng = rand.New(rand.NewSource(uint64(rand.Int31())))
+		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
 	for j := 0; j < totalRuns; j++ {
 		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), false)
@@ -152,7 +152,9 @@ func runModel(
 	idx int, rSeed int32, parallel bool,
 ) (Tables, error) {
 	model.Default(p, m)
-	err := exp.ApplyValues(idx, &m.World)
+
+	values := exp.Values(idx)
+	err := exp.ApplyValues(values, &m.World)
 	if err != nil {
 		return Tables{}, err
 	}
@@ -166,8 +168,6 @@ func runModel(
 		ecs.GetResource[params.RandomSeed](&m.World).Seed = int(rSeed)
 		m.Seed(uint64(rSeed))
 	}
-
-	values := exp.Values(idx)
 
 	obs, err := observers.CreateObservers()
 	if err != nil {

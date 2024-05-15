@@ -3,7 +3,6 @@ package util
 import (
 	"encoding/json"
 	"os"
-	"time"
 
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
@@ -35,7 +34,7 @@ func ExperimentFromFile(path string) (experiment.Experiment, error) {
 		return experiment.Experiment{}, err
 	}
 
-	return experiment.New(exp, rand.New(rand.NewSource(uint64(time.Now().UnixNano()))))
+	return experiment.New(exp, rand.New(rand.NewSource(0)))
 }
 
 func ObserversDefFromFile(path string) (ObserversDef, error) {
