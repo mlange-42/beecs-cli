@@ -10,6 +10,8 @@ require (
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 )
 
+replace github.com/mlange-42/beecs v0.1.0 => ../beecs
+
 require (
 	git.sr.ht/~sbinet/gg v0.5.0 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
