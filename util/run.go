@@ -49,7 +49,7 @@ func RunSequential(
 		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
 	for j := 0; j < totalRuns; j++ {
-		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), false)
+		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), totalRuns > 1)
 		if err != nil {
 			return err
 		}
@@ -149,7 +149,7 @@ func runModel(
 	observers *ObserversDef,
 	overwrite []experiment.ParameterValue,
 	m *amod.Model,
-	idx int, rSeed int32, parallel bool,
+	idx int, rSeed int32, noUi bool,
 ) (Tables, error) {
 	model.Default(p, m)
 
@@ -208,13 +208,13 @@ func runModel(
 		m.AddSystem(t)
 	}
 
-	if !parallel {
+	if !noUi {
 		for _, p := range obs.TimeSeriesPlots {
 			m.AddUISystem(p)
 		}
 	}
 
-	if parallel {
+	if noUi {
 		m.Run()
 	} else {
 		window.Run(m)
