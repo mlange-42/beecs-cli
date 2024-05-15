@@ -1,0 +1,39 @@
+{
+    "TimeSeriesPlots": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "Params": {
+                "Cumulative": true
+            },
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "WorkerCohorts", "X": "Time [d]", "Y": "Count"},
+            "Bounds": {"X": 1, "Y": 30, "W": 600, "H": 400}
+        },
+        {
+            "Observer": "obs.Stores",
+            "Params": {
+                "PollenFactor": 20
+            },
+            "Columns": ["Honey", "Pollen x20"],
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "Stores", "X": "Time [d]", "Y": "Amount [kg]"},
+            "Bounds": {"X": 1, "Y": 470, "W": 600, "H": 400}
+        },
+        {
+            "Observer": "obs.PatchNectar",
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "Nectar", "X": "Time [d]", "Y": "Amount [L]"},
+            "Bounds": {"X": 610, "Y": 30, "W": 600, "H": 400}
+        },
+        {
+            "Observer": "obs.PatchPollen",
+            "DrawInterval": 5,
+            "MaxRows": 730,
+            "Labels": {"Title": "Pollen", "X": "Time [d]", "Y": "Amount [g]"},
+            "Bounds": {"X": 610, "Y": 470, "W": 600, "H": 400}
+        }
+    ]
+}

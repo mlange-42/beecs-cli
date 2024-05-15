@@ -73,6 +73,9 @@ func RootCommand() *cobra.Command {
 					return err
 				}
 			}
+			if p.InitialPatches.File != "" {
+				p.InitialPatches.File = path.Join(dir, p.InitialPatches.File)
+			}
 
 			var exp experiment.Experiment
 			var err error

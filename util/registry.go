@@ -14,6 +14,8 @@ func init() {
 	registerObserver[obs.WorkerCohorts]()
 	registerObserver[obs.ForagingPeriod]()
 	registerObserver[obs.Stores]()
+	registerObserver[obs.PatchNectar]()
+	registerObserver[obs.PatchPollen]()
 }
 
 func registerObserver[T any]() {
