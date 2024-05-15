@@ -49,9 +49,12 @@ jobs:
         with:
           go-version: '1.22.x'
       - name: Install dependencies
-        run: go get ./...
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gcc-mingw-w64
+          go get ./...
       - name: Build
-        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           zip -r beecs-cli.zip beecs-cli.exe
