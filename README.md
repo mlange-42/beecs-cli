@@ -48,6 +48,12 @@ Print all default parameters in the tool's input format:
 beecs-cli parameters
 ```
 
+Create input file templates in the current directory:
+
+```
+beecs-cli init
+```
+
 ### Input files
 
 All file locations are relative to the working directory given by `-d` (defaults to the current directory).
