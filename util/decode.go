@@ -34,7 +34,7 @@ func ExperimentFromFile(path string) (experiment.Experiment, error) {
 		return experiment.Experiment{}, err
 	}
 
-	return experiment.New(exp, rand.New(nil))
+	return experiment.New(exp, rand.New(rand.NewSource(0)))
 }
 
 func ObserversDefFromFile(path string) (ObserversDef, error) {

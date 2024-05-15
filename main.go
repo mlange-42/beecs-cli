@@ -65,11 +65,11 @@ func RootCommand() *cobra.Command {
 				if err != nil {
 					return err
 				}
-			}
-			if seed > 0 {
-				exp.Seed(uint64(seed))
-			} else {
-				exp.Seed(rand.Uint64())
+				if seed > 0 {
+					exp.Seed(uint64(seed))
+				} else {
+					exp.Seed(rand.Uint64())
+				}
 			}
 
 			var observers util.ObserversDef
