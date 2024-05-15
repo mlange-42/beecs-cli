@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -14,6 +16,12 @@ import (
 	"github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/rand"
+)
+
+const (
+	PARAMETERS = "parameters.json"
+	OBSERVERS  = "observers.json"
+	EXPERIMENT = "experiment.json"
 )
 
 func main() {
@@ -118,9 +126,9 @@ func RootCommand() *cobra.Command {
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
-	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{"parameters.json"}, "Parameter files, processed in the given order")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{PARAMETERS}, "Parameter files, processed in the given order")
 	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
-	root.Flags().StringVarP(&obsFile, "observers", "o", "observers.json", "Observers file")
+	root.Flags().StringVarP(&obsFile, "observers", "o", OBSERVERS, "Observers file")
 	root.Flags().Float64VarP(&speed, "speed", "s", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
@@ -168,4 +176,66 @@ func ParametersCommand() *cobra.Command {
 	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{}, "Optional parameter files, processed in the given order")
 
 	return root
+}
+
+func InitCommand() *cobra.Command {
+	var dir string
+
+	root := &cobra.Command{
+		Use:           "init",
+		Short:         "Initialize templates for an experiment.",
+		Long:          `Initialize templates for an experiment.`,
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			parFile := path.Join(dir, PARAMETERS)
+			obsFile := path.Join(dir, OBSERVERS)
+			expFile := path.Join(dir, EXPERIMENT)
+
+			if fileExists(parFile) {
+				return fmt.Errorf("parameter file '%s' already exists", parFile)
+			}
+			if fileExists(obsFile) {
+				return fmt.Errorf("observers file '%s' already exists", obsFile)
+			}
+			if fileExists(expFile) {
+				return fmt.Errorf("experiments file '%s' already exists", expFile)
+			}
+
+			for _, f := range []string{parFile, obsFile, expFile} {
+				err := os.MkdirAll(filepath.Dir(f), os.ModePerm)
+				if err != nil {
+					return err
+				}
+			}
+
+			p := params.Default()
+
+			js, err := json.MarshalIndent(&p, "", "    ")
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(string(js))
+
+			return nil
+		},
+	}
+	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
+
+	return root
+}
+
+func fileExists(name string) bool {
+	_, err := os.Stat(name)
+	if err == nil {
+		return true
+	}
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return false
 }
