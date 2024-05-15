@@ -4,3 +4,7 @@
 
 - Allows to set a super-seed for random seed generation in experiments (#16, #17)
 - Seeds of individual runs in experiments are written to the parameter output (#16)
+
+### Other
+
+- Show plots only when a single run is performed (#19)
