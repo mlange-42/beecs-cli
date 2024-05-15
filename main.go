@@ -7,6 +7,7 @@ import (
 	"path"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
@@ -49,6 +50,8 @@ func RootCommand() *cobra.Command {
 				_ = cmd.Help()
 				os.Exit(0)
 			}
+
+			rand.Seed(uint64(time.Now().UTC().Nanosecond()))
 
 			p := params.Default()
 			for _, f := range paramFiles {
