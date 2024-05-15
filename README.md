@@ -51,7 +51,7 @@ beecs-cli parameters
 Create input file templates in the current directory:
 
 ```
-beecs init
+beecs-cli init
 ```
 
 ### Input files
