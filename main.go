@@ -12,6 +12,7 @@ import (
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/rand"
 )
 
 func main() {
@@ -65,6 +66,12 @@ func RootCommand() *cobra.Command {
 					return err
 				}
 			}
+			if seed > 0 {
+				exp.Seed(uint64(seed))
+			} else {
+				exp.Seed(rand.Uint64())
+			}
+
 			var observers util.ObserversDef
 			if obsFile != "" {
 				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile))
