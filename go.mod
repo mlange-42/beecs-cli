@@ -6,7 +6,7 @@ require (
 	github.com/mlange-42/arche v0.12.0
 	github.com/mlange-42/arche-model v0.8.1
 	github.com/mlange-42/arche-pixel v0.9.0
-	github.com/mlange-42/beecs v0.1.1-0.20240515113648-2f87293afd40
+	github.com/mlange-42/beecs v0.1.1-0.20240515123818-7797eb0b8a11
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 )
