@@ -14,6 +14,7 @@ func ParametersFromFile(path string, params *params.DefaultParams) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()
@@ -25,6 +26,7 @@ func ExperimentFromFile(path string) (experiment.Experiment, error) {
 	if err != nil {
 		return experiment.Experiment{}, err
 	}
+	defer file.Close()
 
 	var exp []experiment.ParameterVariation
 
@@ -42,6 +44,8 @@ func ObserversDefFromFile(path string) (ObserversDef, error) {
 	if err != nil {
 		return ObserversDef{}, err
 	}
+	defer file.Close()
+
 	var obs ObserversDef
 
 	decoder := json.NewDecoder(file)

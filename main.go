@@ -76,6 +76,11 @@ func RootCommand() *cobra.Command {
 			if p.InitialPatches.File != "" {
 				p.InitialPatches.File = path.Join(dir, p.InitialPatches.File)
 			}
+			if !p.ForagingPeriod.Builtin {
+				for i, f := range p.ForagingPeriod.Files {
+					p.ForagingPeriod.Files[i] = path.Join(dir, f)
+				}
+			}
 
 			var exp experiment.Experiment
 			var err error

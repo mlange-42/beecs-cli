@@ -1,0 +1,10 @@
+{
+    "Termination": {
+        "MaxTicks": 3650
+    },
+    "ForagingPeriod": {
+        "Files": ["weather.txt"],
+        "Builtin": false,
+        "RandomYears": false
+    }
+}

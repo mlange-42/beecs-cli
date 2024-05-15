@@ -96,3 +96,5 @@ jobs:
         xvfb-run go run . -s 120 -d _examples/base -x params.Termination.MaxTicks=365
         go run . -r 5 -d _examples/base -e experiment.json -x params.Termination.MaxTicks=365
         xvfb-run go run . -s 120 -d _examples/patches -x params.Termination.MaxTicks=365
+        xvfb-run go run . -s 120 -d _examples/weather_file -x params.Termination.MaxTicks=730
+        xvfb-run go run . -s 120 -d _examples/weather_builtin -x params.Termination.MaxTicks=730
