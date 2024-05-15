@@ -27,6 +27,7 @@ func main() {
 // RootCommand sets up the CLI
 func RootCommand() *cobra.Command {
 	var dir string
+	var outDir string
 	var paramFiles []string
 	var expFile string
 	var obsFile string
@@ -52,6 +53,10 @@ func RootCommand() *cobra.Command {
 			}
 
 			rand.Seed(uint64(time.Now().UTC().Nanosecond()))
+
+			if outDir == "" {
+				outDir = dir
+			}
 
 			p := params.Default()
 			for _, f := range paramFiles {
@@ -104,14 +109,15 @@ func RootCommand() *cobra.Command {
 				}
 			}
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, overwriteParams, dir, totalRuns, speed, seed)
+				return util.RunSequential(&p, &exp, &observers, overwriteParams, outDir, totalRuns, speed, seed)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, overwriteParams, dir, totalRuns, threads, speed, seed)
+				return util.RunParallel(&p, &exp, &observers, overwriteParams, outDir, totalRuns, threads, speed, seed)
 			}
 		},
 	}
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
+	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
 	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{"parameters.json"}, "Parameter files, processed in the given order")
 	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
 	root.Flags().StringVarP(&obsFile, "observers", "o", "observers.json", "Observers file")
