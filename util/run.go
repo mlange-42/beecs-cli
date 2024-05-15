@@ -3,7 +3,6 @@ package util
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"path"
 	"reflect"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/params"
+	"golang.org/x/exp/rand"
 )
 
 func RunSequential(
@@ -44,9 +44,9 @@ func RunSequential(
 
 	var rng *rand.Rand
 	if seed > 0 {
-		rng = rand.New(rand.NewSource(int64(seed)))
+		rng = rand.New(rand.NewSource(uint64(seed)))
 	} else {
-		rng = rand.New(rand.NewSource(int64(rand.Int31())))
+		rng = rand.New(rand.NewSource(uint64(rand.Int31())))
 	}
 	for j := 0; j < totalRuns; j++ {
 		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), false)
@@ -78,9 +78,9 @@ func RunParallel(
 
 	var rng *rand.Rand
 	if seed > 0 {
-		rng = rand.New(rand.NewSource(int64(seed)))
+		rng = rand.New(rand.NewSource(uint64(seed)))
 	} else {
-		rng = rand.New(rand.NewSource(int64(rand.Int31())))
+		rng = rand.New(rand.NewSource(uint64(rand.Int31())))
 	}
 	seeds := make([]int32, totalRuns)
 	for i := range seeds {
