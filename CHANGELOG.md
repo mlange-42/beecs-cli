@@ -2,5 +2,5 @@
 
 ### Features
 
-- Allows to set a super-seed for random seed generation in experiments (#16)
+- Allows to set a super-seed for random seed generation in experiments (#16, #17)
 - Seeds of individual runs in experiments are written to the parameter output (#16)
