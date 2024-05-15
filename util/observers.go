@@ -21,7 +21,7 @@ func (e *entry) UnmarshalJSON(jsonData []byte) error {
 	return nil
 }
 
-type timeSeriesPlot struct {
+type TimeSeriesPlotDef struct {
 	Labels         plot.Labels
 	Title          string
 	Observer       string
@@ -33,7 +33,7 @@ type timeSeriesPlot struct {
 	MaxRows        int
 }
 
-type table struct {
+type TableDef struct {
 	File           string
 	Observer       string
 	Params         entry
@@ -43,8 +43,8 @@ type table struct {
 type ObserversDef struct {
 	Parameters      string
 	CsvSeparator    string
-	TimeSeriesPlots []timeSeriesPlot
-	Tables          []table
+	TimeSeriesPlots []TimeSeriesPlotDef
+	Tables          []TableDef
 }
 
 func (obs *ObserversDef) CreateObservers() (Observers, error) {

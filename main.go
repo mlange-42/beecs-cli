@@ -135,6 +135,7 @@ func RootCommand() *cobra.Command {
 	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
+	root.AddCommand(InitCommand())
 	root.AddCommand(ParametersCommand())
 
 	return root
@@ -213,13 +214,38 @@ func InitCommand() *cobra.Command {
 			}
 
 			p := params.Default()
-
-			js, err := json.MarshalIndent(&p, "", "    ")
+			err := writeJSON(parFile, &p)
 			if err != nil {
 				return err
 			}
 
-			fmt.Println(string(js))
+			o := util.ObserversDef{
+				Parameters:      "out/parameters.csv",
+				CsvSeparator:    ",",
+				TimeSeriesPlots: []util.TimeSeriesPlotDef{},
+				Tables:          []util.TableDef{},
+			}
+			err = writeJSON(obsFile, &o)
+			if err != nil {
+				return err
+			}
+
+			e := []experiment.ParameterVariation{
+				{
+					Parameter: "params.InitialStores.Honey",
+					SequenceFloatRange: &experiment.SequenceFloatRange{
+						Min:    10,
+						Max:    100,
+						Values: 10,
+					},
+				},
+			}
+			err = writeJSON(expFile, &e)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("Successfully initialized experiment template in '%s'\n", dir)
 
 			return nil
 		},
@@ -227,6 +253,21 @@ func InitCommand() *cobra.Command {
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 
 	return root
+}
+
+func writeJSON(path string, value any) error {
+	js, err := json.MarshalIndent(value, "", "    ")
+	if err != nil {
+		return err
+	}
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	if _, err = f.Write(js); err != nil {
+		return err
+	}
+	return f.Close()
 }
 
 func fileExists(name string) bool {
