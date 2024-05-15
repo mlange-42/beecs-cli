@@ -28,10 +28,11 @@ func RootCommand() *cobra.Command {
 	var paramFiles []string
 	var expFile string
 	var obsFile string
-	var tps float64
+	var speed float64
 	var threads int
 	var runs int
 	var overwrite []string
+	var seed int
 
 	root := &cobra.Command{
 		Use:           "beecs-cli",
@@ -92,21 +93,22 @@ func RootCommand() *cobra.Command {
 					Value:     parts[1],
 				}
 			}
-
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, overwriteParams, dir, totalRuns, tps)
+				return util.RunSequential(&p, &exp, &observers, overwriteParams, dir, totalRuns, speed, seed)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, overwriteParams, dir, totalRuns, threads, tps)
+				return util.RunParallel(&p, &exp, &observers, overwriteParams, dir, totalRuns, threads, speed, seed)
 			}
 		},
 	}
+
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{"parameters.json"}, "Parameter files, processed in the given order")
 	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
 	root.Flags().StringVarP(&obsFile, "observers", "o", "observers.json", "Observers file")
-	root.Flags().Float64VarP(&tps, "tps", "s", 0, "Limit ticks per second")
+	root.Flags().Float64VarP(&speed, "speed", "s", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
+	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
 	root.AddCommand(ParametersCommand())

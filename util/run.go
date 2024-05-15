@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"log"
+	"math/rand"
 	"path"
 	"reflect"
 
@@ -20,7 +21,7 @@ func RunSequential(
 	observers *ObserversDef,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, tps float64,
+	totalRuns int, tps float64, seed int,
 ) error {
 	m := amod.New()
 	m.FPS = 30
@@ -41,8 +42,14 @@ func RunSequential(
 		return err
 	}
 
+	var rng *rand.Rand
+	if seed > 0 {
+		rng = rand.New(rand.NewSource(int64(seed)))
+	} else {
+		rng = rand.New(rand.NewSource(int64(rand.Int31())))
+	}
 	for j := 0; j < totalRuns; j++ {
-		result, err := runModel(p, exp, observers, overwrite, m, j, false)
+		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), false)
 		if err != nil {
 			return err
 		}
@@ -62,16 +69,27 @@ func RunParallel(
 	observers *ObserversDef,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, threads int, tps float64,
+	totalRuns int, threads int, tps float64, seed int,
 ) error {
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
 	results := make(chan Tables, totalRuns)
 
+	var rng *rand.Rand
+	if seed > 0 {
+		rng = rand.New(rand.NewSource(int64(seed)))
+	} else {
+		rng = rand.New(rand.NewSource(int64(rand.Int31())))
+	}
+	seeds := make([]int32, totalRuns)
+	for i := range seeds {
+		seeds[i] = rng.Int31()
+	}
+
 	// Start the workers.
 	for w := 0; w < threads; w++ {
-		go worker(jobs, results, p, exp, observers, overwrite, tps)
+		go worker(jobs, results, p, exp, observers, overwrite, tps, seeds)
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
@@ -108,7 +126,7 @@ func RunParallel(
 	return writer.Close()
 }
 
-func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, overwrite []experiment.ParameterValue, tps float64) {
+func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, overwrite []experiment.ParameterValue, tps float64, seeds []int32) {
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -116,7 +134,7 @@ func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experi
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		res, err := runModel(p, exp, observers, overwrite, m, j, true)
+		res, err := runModel(p, exp, observers, overwrite, m, j, seeds[j], true)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -131,7 +149,7 @@ func runModel(
 	observers *ObserversDef,
 	overwrite []experiment.ParameterValue,
 	m *amod.Model,
-	idx int, parallel bool,
+	idx int, rSeed int32, parallel bool,
 ) (Tables, error) {
 	model.Default(p, m)
 	err := exp.ApplyValues(idx, &m.World)
@@ -143,6 +161,10 @@ func runModel(
 		if err = model.SetParameter(&m.World, par.Parameter, par.Value); err != nil {
 			return Tables{}, err
 		}
+	}
+	if rSeed >= 0 {
+		ecs.GetResource[params.RandomSeed](&m.World).Seed = int(rSeed)
+		m.Seed(uint64(rSeed))
 	}
 
 	values := exp.Values(idx)
