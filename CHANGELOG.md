@@ -5,6 +5,7 @@
 - Allows to set a super-seed for random seed generation in experiments (#16, #17)
 - Seeds of individual runs in experiments are written to the parameter output (#16)
 - Adds sub-command `init` to create input file templates (#22)
+- Adds support for seasonal and "scripted" patch dynamics (#23)
 
 ### Other
 

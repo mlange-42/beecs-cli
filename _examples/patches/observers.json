@@ -1,12 +1,4 @@
 {
-    "CsvSeparator": ";",
-    "Parameters": "out/Parameters.csv",
-    "Tables": [
-        {
-            "Observer": "obs.WorkerCohorts",
-            "File": "out/WorkerCohorts.csv"
-        }
-    ],
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
@@ -40,7 +32,7 @@
             "Observer": "obs.PatchPollen",
             "DrawInterval": 5,
             "MaxRows": 730,
-            "Labels": {"Title": "Pollen", "X": "Time [d]", "Y": "Amount [kg]"},
+            "Labels": {"Title": "Pollen", "X": "Time [d]", "Y": "Amount [g]"},
             "Bounds": {"X": 610, "Y": 470, "W": 600, "H": 400}
         }
     ]
