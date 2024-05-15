@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -63,7 +64,7 @@ func (w *CsvWriter) Write(tables *Tables) error {
 		w.builder.Reset()
 		for _, row := range table {
 			for i, v := range row {
-				fmt.Fprint(&w.builder, v)
+				fmt.Fprint(&w.builder, strconv.FormatFloat(v, 'f', -1, 64))
 				if i < len(row)-1 {
 					fmt.Fprint(&w.builder, w.sep)
 				}
