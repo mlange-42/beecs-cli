@@ -14,12 +14,12 @@ Command line interface for the [beecs](https://github.com/mlange-42/beecs) honey
 
 ## Installation
 
-There are currently no precompiled binaries provided.
+Pre-compiled binaries for Linux, Windows and MacOS are available in the [Releases](https://github.com/mlange-42/beecs-cli/releases).
 
-Install beecs-cli using [Go](https://go.dev)
+To install the latest development version using [Go](https://go.dev), run:
 
 ```
-go install github.com/mlange-42/beecs-cli@latest
+go install github.com/mlange-42/beecs-cli@main
 ```
 
 ## Usage
