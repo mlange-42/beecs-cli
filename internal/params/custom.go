@@ -67,7 +67,7 @@ func (p *CustomParams) FromJSON(path string) error {
 
 		decoder := json.NewDecoder(bytes.NewReader(entry.Bytes))
 		decoder.DisallowUnknownFields()
-		if err := decoder.Decode(&resourceVal); err != nil {
+		if err := decoder.Decode(resourceVal); err != nil {
 			return err
 		}
 
@@ -102,6 +102,15 @@ func (p *CustomParams) Apply(world *ecs.World) {
 
 	for tp, res := range p.Custom {
 		id := ecs.ResourceTypeID(world, tp)
-		world.Resources().Add(id, res)
+
+		v := reflect.Indirect(reflect.ValueOf(res))
+		b := v.Interface()
+
+		val := reflect.ValueOf(b)
+		ptr := reflect.New(val.Type()).Elem()
+		ptr.Set(val)
+
+		world.Resources().Add(id, ptr.Addr().Interface())
 	}
+	fmt.Println(p.Custom)
 }
