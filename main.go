@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/beecs-cli/params"
 	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
@@ -41,6 +42,7 @@ func RootCommand() *cobra.Command {
 	var paramFiles []string
 	var expFile string
 	var obsFile string
+	var sysFile string
 	var speed float64
 	var threads int
 	var runs int
@@ -107,6 +109,13 @@ func RootCommand() *cobra.Command {
 					return err
 				}
 			}
+			var systems []model.System
+			if sysFile != "" {
+				systems, err = util.SystemsFromFile(path.Join(dir, obsFile))
+				if err != nil {
+					return err
+				}
+			}
 
 			numSets := exp.ParameterSets()
 			if numSets == 0 {
@@ -129,9 +138,9 @@ func RootCommand() *cobra.Command {
 				}
 			}
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, overwriteParams, outDir, totalRuns, speed, seed)
+				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, totalRuns, speed, seed)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, overwriteParams, outDir, totalRuns, threads, speed, seed)
+				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, totalRuns, threads, speed, seed)
 			}
 		},
 	}
@@ -141,6 +150,7 @@ func RootCommand() *cobra.Command {
 	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{PARAMETERS}, "Parameter files, processed in the given order")
 	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
 	root.Flags().StringVarP(&obsFile, "observers", "o", OBSERVERS, "Observers file")
+	root.Flags().StringVarP(&sysFile, "systems", "", "", "Systems file")
 	root.Flags().Float64VarP(&speed, "speed", "s", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
