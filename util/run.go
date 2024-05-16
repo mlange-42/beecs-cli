@@ -19,6 +19,7 @@ func RunSequential(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *ObserversDef,
+	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
 	totalRuns int, tps float64, seed int,
@@ -49,7 +50,7 @@ func RunSequential(
 		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
 	for j := 0; j < totalRuns; j++ {
-		result, err := runModel(p, exp, observers, overwrite, m, j, rng.Int31(), totalRuns > 1)
+		result, err := runModel(p, exp, observers, systems, overwrite, m, j, rng.Int31(), totalRuns > 1)
 		if err != nil {
 			return err
 		}
@@ -67,6 +68,7 @@ func RunParallel(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *ObserversDef,
+	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
 	totalRuns int, threads int, tps float64, seed int,
@@ -89,7 +91,7 @@ func RunParallel(
 
 	// Start the workers.
 	for w := 0; w < threads; w++ {
-		go worker(jobs, results, p, exp, observers, overwrite, tps, seeds)
+		go worker(jobs, results, p, exp, observers, systems, overwrite, tps, seeds)
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
@@ -126,7 +128,7 @@ func RunParallel(
 	return writer.Close()
 }
 
-func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, overwrite []experiment.ParameterValue, tps float64, seeds []int32) {
+func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, systems []amod.System, overwrite []experiment.ParameterValue, tps float64, seeds []int32) {
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -134,7 +136,7 @@ func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experi
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		res, err := runModel(p, exp, observers, overwrite, m, j, seeds[j], true)
+		res, err := runModel(p, exp, observers, systems, overwrite, m, j, seeds[j], true)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -147,11 +149,18 @@ func runModel(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *ObserversDef,
+	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	m *amod.Model,
 	idx int, rSeed int32, noUi bool,
 ) (Tables, error) {
-	model.Default(p, m)
+	if len(systems) == 0 {
+		model.Default(p, m)
+	} else {
+		sysCopy := make([]amod.System, len(systems))
+		copy(sysCopy, systems)
+		model.WithSystems(p, sysCopy, m)
+	}
 
 	values := exp.Values(idx)
 	err := exp.ApplyValues(values, &m.World)
