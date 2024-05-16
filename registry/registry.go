@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/mlange-42/beecs/obs"
@@ -46,16 +47,25 @@ func init() {
 
 func RegisterObserver[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
+	if _, ok := observerRegistry[tp.String()]; ok {
+		panic(fmt.Sprintf("there is already an observer with type name '%s' registered", tp.String()))
+	}
 	observerRegistry[tp.String()] = tp
 }
 
 func RegisterResource[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
+	if _, ok := resourcesRegistry[tp.String()]; ok {
+		panic(fmt.Sprintf("there is already a resource with type name '%s' registered", tp.String()))
+	}
 	resourcesRegistry[tp.String()] = tp
 }
 
 func RegisterSystem[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
+	if _, ok := systemsRegistry[tp.String()]; ok {
+		panic(fmt.Sprintf("there is already a system with type name '%s' registered", tp.String()))
+	}
 	systemsRegistry[tp.String()] = tp
 }
 
