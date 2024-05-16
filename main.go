@@ -11,9 +11,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mlange-42/beecs-cli/params"
 	"github.com/mlange-42/beecs-cli/util"
 	"github.com/mlange-42/beecs/experiment"
-	"github.com/mlange-42/beecs/params"
+	baseparams "github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/rand"
 )
@@ -66,19 +67,21 @@ func RootCommand() *cobra.Command {
 				outDir = dir
 			}
 
-			p := params.Default()
+			p := params.CustomParams{
+				Params: baseparams.Default(),
+			}
 			for _, f := range paramFiles {
-				err := util.ParametersFromFile(path.Join(dir, f), &p)
+				err := p.FromJSON(path.Join(dir, f))
 				if err != nil {
 					return err
 				}
 			}
-			if p.InitialPatches.File != "" {
-				p.InitialPatches.File = path.Join(dir, p.InitialPatches.File)
+			if p.Params.InitialPatches.File != "" {
+				p.Params.InitialPatches.File = path.Join(dir, p.Params.InitialPatches.File)
 			}
-			if !p.ForagingPeriod.Builtin {
-				for i, f := range p.ForagingPeriod.Files {
-					p.ForagingPeriod.Files[i] = path.Join(dir, f)
+			if !p.Params.ForagingPeriod.Builtin {
+				for i, f := range p.Params.ForagingPeriod.Files {
+					p.Params.ForagingPeriod.Files[i] = path.Join(dir, f)
 				}
 			}
 
@@ -163,7 +166,7 @@ func ParametersCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			p := params.Default()
+			p := baseparams.Default()
 			for _, f := range paramFiles {
 				err := util.ParametersFromFile(path.Join(dir, f), &p)
 				if err != nil {
@@ -221,7 +224,7 @@ func InitCommand() *cobra.Command {
 				}
 			}
 
-			p := params.Default()
+			p := baseparams.Default()
 			err := writeJSON(parFile, &p)
 			if err != nil {
 				return err

@@ -41,13 +41,18 @@ func (p *CustomParams) FromJSON(path string) error {
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()
 
-	pars := customParamsJs{}
+	pars := customParamsJs{
+		Params: p.Params,
+	}
 	err = decoder.Decode(&pars)
 	if err != nil {
 		return err
 	}
 
 	p.Params = pars.Params
+	if p.Custom == nil {
+		p.Custom = map[reflect.Type]any{}
+	}
 
 	for tpName, entry := range pars.Custom {
 		tp, ok := util.GetResource(tpName)

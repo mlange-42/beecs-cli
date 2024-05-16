@@ -3,6 +3,7 @@ package util
 import (
 	"reflect"
 
+	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/obs"
 )
 
@@ -18,7 +19,7 @@ func init() {
 	registerObserver[obs.PatchPollen]()
 
 	resourcesRegistry = map[string]reflect.Type{}
-	registerResource[obs.PatchPollen]()
+	registerResource[comp.Age]()
 }
 
 func registerObserver[T any]() {
