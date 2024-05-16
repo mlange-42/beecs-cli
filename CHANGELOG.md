@@ -6,6 +6,7 @@
 - Seeds of individual runs in experiments are written to the parameter output (#16)
 - Adds sub-command `init` to create input file templates (#22)
 - Adds support for seasonal and "scripted" patch dynamics (#23)
+- Adds support for weather/foraging period files (#24)
 
 ### Other
 
