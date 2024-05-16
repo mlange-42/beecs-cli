@@ -159,9 +159,17 @@ func runModel(
 	} else {
 		sysCopy := make([]amod.System, len(systems))
 		for i, sys := range systems {
-			v := reflect.Indirect(reflect.ValueOf(sys))
-			b := v.Addr().Interface().(amod.System)
-			sysCopy[i] = b
+			srcVal := reflect.ValueOf(sys)
+			srcType := srcVal.Type()
+			destVal := reflect.New(srcType.Elem())
+
+			destVal.Elem().Set(srcVal.Elem())
+			a := destVal.Elem().Interface()
+			val := reflect.ValueOf(a)
+
+			ptr := reflect.New(val.Type()).Elem()
+			ptr.Set(val)
+			sysCopy[i] = ptr.Addr().Interface().(amod.System)
 		}
 		model.WithSystems(p, sysCopy, m)
 	}
