@@ -1,7 +1,7 @@
 {
     "Parameters": {
         "Termination": {
-            "MaxTicks": 3650
+            "MaxTicks": 730
         }
     }
 }

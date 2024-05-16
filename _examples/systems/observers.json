@@ -1,4 +1,12 @@
 {
+    "CsvSeparator": ";",
+    "Parameters": "out/Parameters.csv",
+    "Tables": [
+        {
+            "Observer": "obs.WorkerCohorts",
+            "File": "out/WorkerCohorts.csv"
+        }
+    ],
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
