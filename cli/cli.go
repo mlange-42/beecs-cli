@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/beecs-cli/params"
-	"github.com/mlange-42/beecs-cli/util"
+	"github.com/mlange-42/beecs-cli/internal/params"
+	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	baseparams "github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
@@ -22,21 +22,21 @@ import (
 )
 
 const (
-	PARAMETERS = "parameters.json"
-	OBSERVERS  = "observers.json"
-	EXPERIMENT = "experiment.json"
+	_PARAMETERS = "parameters.json"
+	_OBSERVERS  = "observers.json"
+	_EXPERIMENT = "experiment.json"
 )
 
 func Run() {
-	if err := RootCommand().Execute(); err != nil {
+	if err := rootCommand().Execute(); err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
 		fmt.Print("\nRun `beecs-cli -h` for help!\n\n")
 		os.Exit(1)
 	}
 }
 
-// RootCommand sets up the CLI
-func RootCommand() *cobra.Command {
+// rootCommand sets up the CLI
+func rootCommand() *cobra.Command {
 	var dir string
 	var outDir string
 	var paramFiles []string
@@ -147,9 +147,9 @@ func RootCommand() *cobra.Command {
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
-	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{PARAMETERS}, "Parameter files, processed in the given order")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS}, "Parameter files, processed in the given order")
 	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
-	root.Flags().StringVarP(&obsFile, "observers", "o", OBSERVERS, "Observers file")
+	root.Flags().StringVarP(&obsFile, "observers", "o", _OBSERVERS, "Observers file")
 	root.Flags().StringVarP(&sysFile, "systems", "", "", "Systems file")
 	root.Flags().Float64VarP(&speed, "speed", "s", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
@@ -157,13 +157,13 @@ func RootCommand() *cobra.Command {
 	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
-	root.AddCommand(InitCommand())
-	root.AddCommand(ParametersCommand())
+	root.AddCommand(initCommand())
+	root.AddCommand(parametersCommand())
 
 	return root
 }
 
-func ParametersCommand() *cobra.Command {
+func parametersCommand() *cobra.Command {
 	var dir string
 	var paramFiles []string
 
@@ -204,7 +204,7 @@ func ParametersCommand() *cobra.Command {
 	return root
 }
 
-func InitCommand() *cobra.Command {
+func initCommand() *cobra.Command {
 	var dir string
 
 	root := &cobra.Command{
@@ -217,9 +217,9 @@ func InitCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			parFile := path.Join(dir, PARAMETERS)
-			obsFile := path.Join(dir, OBSERVERS)
-			expFile := path.Join(dir, EXPERIMENT)
+			parFile := path.Join(dir, _PARAMETERS)
+			obsFile := path.Join(dir, _OBSERVERS)
+			expFile := path.Join(dir, _EXPERIMENT)
 
 			if fileExists(parFile) {
 				return fmt.Errorf("parameter file '%s' already exists", parFile)
