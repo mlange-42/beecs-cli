@@ -6,6 +6,7 @@
 
 	"sys.CalcAff",
 	"sys.CalcForagingPeriod",
+	"sys.ReplenishPatches",
 	"sys.BroodCare",
 	"sys.AgeCohorts",
 	"sys.TransitionForagers",
