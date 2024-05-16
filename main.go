@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"strings"
 	"time"
@@ -166,15 +167,18 @@ func ParametersCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			p := baseparams.Default()
+			p := params.CustomParams{
+				Params: baseparams.Default(),
+				Custom: map[reflect.Type]any{},
+			}
 			for _, f := range paramFiles {
-				err := util.ParametersFromFile(path.Join(dir, f), &p)
+				err := p.FromJSON(path.Join(dir, f))
 				if err != nil {
 					return err
 				}
 			}
 
-			js, err := json.MarshalIndent(&p, "", "    ")
+			js, err := p.ToJSON()
 			if err != nil {
 				return err
 			}
@@ -224,8 +228,15 @@ func InitCommand() *cobra.Command {
 				}
 			}
 
-			p := baseparams.Default()
-			err := writeJSON(parFile, &p)
+			p := params.CustomParams{
+				Params: baseparams.Default(),
+				Custom: map[reflect.Type]any{},
+			}
+			js, err := p.ToJSON()
+			if err != nil {
+				return err
+			}
+			err = writeBytes(parFile, js)
 			if err != nil {
 				return err
 			}
@@ -276,6 +287,17 @@ func writeJSON(path string, value any) error {
 		return err
 	}
 	if _, err = f.Write(js); err != nil {
+		return err
+	}
+	return f.Close()
+}
+
+func writeBytes(path string, value []byte) error {
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	if _, err = f.Write(value); err != nil {
 		return err
 	}
 	return f.Close()

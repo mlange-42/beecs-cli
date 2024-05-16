@@ -98,3 +98,4 @@ jobs:
         xvfb-run go run . -s 120 -d _examples/patches -x params.Termination.MaxTicks=365
         xvfb-run go run . -s 120 -d _examples/weather_file -x params.Termination.MaxTicks=730
         xvfb-run go run . -s 120 -d _examples/weather_builtin -x params.Termination.MaxTicks=730
+        xvfb-run go run . -s 120 -d _examples/custom -x params.Termination.MaxTicks=730

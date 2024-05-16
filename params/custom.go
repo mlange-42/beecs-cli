@@ -21,6 +21,10 @@ func (e *entry) UnmarshalJSON(jsonData []byte) error {
 	return nil
 }
 
+func (e entry) MarshalJSON() ([]byte, error) {
+	return e.Bytes, nil
+}
+
 type CustomParams struct {
 	Params baseparams.DefaultParams
 	Custom map[reflect.Type]any
@@ -70,6 +74,27 @@ func (p *CustomParams) FromJSON(path string) error {
 		p.Custom[tp] = resourceVal
 	}
 	return nil
+}
+
+func (p *CustomParams) ToJSON() ([]byte, error) {
+	par := customParamsJs{
+		Params: p.Params,
+		Custom: map[string]entry{},
+	}
+
+	for k, v := range p.Custom {
+		js, err := json.MarshalIndent(&v, "", "    ")
+		if err != nil {
+			return []byte{}, err
+		}
+		par.Custom[k.String()] = entry{Bytes: js}
+	}
+
+	js, err := json.MarshalIndent(&par, "", "    ")
+	if err != nil {
+		return []byte{}, err
+	}
+	return js, nil
 }
 
 func (p *CustomParams) Apply(world *ecs.World) {

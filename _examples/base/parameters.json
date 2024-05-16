@@ -1,12 +1,14 @@
 {
-    "Termination": {
-        "MaxTicks": 3650
-    },
-    "InitialPopulation": {
-        "Count": 25000
-    },
-    "Foragers": {
-        "FlightVelocity": 6.0,
-        "MaxKmPerDay": 25.0
+    "Params": {
+        "Termination": {
+            "MaxTicks": 3650
+        },
+        "InitialPopulation": {
+            "Count": 25000
+        },
+        "Foragers": {
+            "FlightVelocity": 6.0,
+            "MaxKmPerDay": 25.0
+        }
     }
 }
