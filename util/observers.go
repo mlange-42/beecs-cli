@@ -10,6 +10,7 @@ import (
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
+	"github.com/mlange-42/beecs-cli/registry"
 )
 
 type entry struct {
@@ -50,7 +51,7 @@ type ObserversDef struct {
 func (obs *ObserversDef) CreateObservers() (Observers, error) {
 	tsPlots := []*window.Window{}
 	for _, p := range obs.TimeSeriesPlots {
-		tp, ok := GetObserver(p.Observer)
+		tp, ok := registry.GetObserver(p.Observer)
 		if !ok {
 			return Observers{}, fmt.Errorf("observer type '%s' is not registered", p.Observer)
 		}
@@ -87,7 +88,7 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 
 	tables := []*reporter.Callback{}
 	for _, t := range obs.Tables {
-		tp, ok := GetObserver(t.Observer)
+		tp, ok := registry.GetObserver(t.Observer)
 		if !ok {
 			return Observers{}, fmt.Errorf("observer type '%s' is not registered", t.Observer)
 		}

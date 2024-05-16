@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/beecs-cli/registry"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
 	"golang.org/x/exp/rand"
@@ -81,7 +82,7 @@ func SystemsFromFile(path string) ([]model.System, error) {
 
 	sys := []model.System{}
 	for _, tpName := range sysStr {
-		tp, ok := GetSystem(tpName)
+		tp, ok := registry.GetSystem(tpName)
 		if !ok {
 			return nil, fmt.Errorf("system type '%s' is not registered", tpName)
 		}

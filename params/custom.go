@@ -8,7 +8,7 @@ import (
 	"reflect"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs-cli/util"
+	"github.com/mlange-42/beecs-cli/registry"
 	baseparams "github.com/mlange-42/beecs/params"
 )
 
@@ -59,7 +59,7 @@ func (p *CustomParams) FromJSON(path string) error {
 	}
 
 	for tpName, entry := range pars.Custom {
-		tp, ok := util.GetResource(tpName)
+		tp, ok := registry.GetResource(tpName)
 		if !ok {
 			return fmt.Errorf("resource type '%s' is not registered", tpName)
 		}

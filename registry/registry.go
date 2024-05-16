@@ -1,4 +1,4 @@
-package util
+package registry
 
 import (
 	"reflect"
@@ -7,22 +7,19 @@ import (
 	"github.com/mlange-42/beecs/sys"
 )
 
-var observerRegistry map[string]reflect.Type
-var resourcesRegistry map[string]reflect.Type
-var systemsRegistry map[string]reflect.Type
+var observerRegistry = map[string]reflect.Type{}
+var resourcesRegistry = map[string]reflect.Type{}
+var systemsRegistry = map[string]reflect.Type{}
 
 func init() {
-	observerRegistry = map[string]reflect.Type{}
 	RegisterObserver[obs.WorkerCohorts]()
 	RegisterObserver[obs.ForagingPeriod]()
 	RegisterObserver[obs.Stores]()
 	RegisterObserver[obs.PatchNectar]()
 	RegisterObserver[obs.PatchPollen]()
 
-	resourcesRegistry = map[string]reflect.Type{}
-	//RegisterResource[comp.Age]()
+	//RegisterResource[...]()
 
-	systemsRegistry = map[string]reflect.Type{}
 	RegisterSystem[sys.InitStore]()
 	RegisterSystem[sys.InitCohorts]()
 	RegisterSystem[sys.InitPopulation]()
