@@ -71,7 +71,7 @@ func rootCommand() *cobra.Command {
 			}
 
 			p := params.CustomParams{
-				Params: baseparams.Default(),
+				Parameters: baseparams.Default(),
 			}
 			for _, f := range paramFiles {
 				err := p.FromJSON(path.Join(dir, f))
@@ -79,12 +79,12 @@ func rootCommand() *cobra.Command {
 					return err
 				}
 			}
-			if p.Params.InitialPatches.File != "" {
-				p.Params.InitialPatches.File = path.Join(dir, p.Params.InitialPatches.File)
+			if p.Parameters.InitialPatches.File != "" {
+				p.Parameters.InitialPatches.File = path.Join(dir, p.Parameters.InitialPatches.File)
 			}
-			if !p.Params.ForagingPeriod.Builtin {
-				for i, f := range p.Params.ForagingPeriod.Files {
-					p.Params.ForagingPeriod.Files[i] = path.Join(dir, f)
+			if !p.Parameters.ForagingPeriod.Builtin {
+				for i, f := range p.Parameters.ForagingPeriod.Files {
+					p.Parameters.ForagingPeriod.Files[i] = path.Join(dir, f)
 				}
 			}
 
@@ -178,8 +178,8 @@ func parametersCommand() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			p := params.CustomParams{
-				Params: baseparams.Default(),
-				Custom: map[reflect.Type]any{},
+				Parameters: baseparams.Default(),
+				Custom:     map[reflect.Type]any{},
 			}
 			for _, f := range paramFiles {
 				err := p.FromJSON(path.Join(dir, f))
@@ -239,8 +239,8 @@ func initCommand() *cobra.Command {
 			}
 
 			p := params.CustomParams{
-				Params: baseparams.Default(),
-				Custom: map[reflect.Type]any{},
+				Parameters: baseparams.Default(),
+				Custom:     map[reflect.Type]any{},
 			}
 			js, err := p.ToJSON()
 			if err != nil {

@@ -26,13 +26,13 @@ func (e entry) MarshalJSON() ([]byte, error) {
 }
 
 type CustomParams struct {
-	Params baseparams.DefaultParams
-	Custom map[reflect.Type]any
+	Parameters baseparams.DefaultParams
+	Custom     map[reflect.Type]any
 }
 
 type customParamsJs struct {
-	Params baseparams.DefaultParams
-	Custom map[string]entry
+	Parameters baseparams.DefaultParams
+	Custom     map[string]entry
 }
 
 func (p *CustomParams) FromJSON(path string) error {
@@ -46,14 +46,14 @@ func (p *CustomParams) FromJSON(path string) error {
 	decoder.DisallowUnknownFields()
 
 	pars := customParamsJs{
-		Params: p.Params,
+		Parameters: p.Parameters,
 	}
 	err = decoder.Decode(&pars)
 	if err != nil {
 		return err
 	}
 
-	p.Params = pars.Params
+	p.Parameters = pars.Parameters
 	if p.Custom == nil {
 		p.Custom = map[reflect.Type]any{}
 	}
@@ -78,8 +78,8 @@ func (p *CustomParams) FromJSON(path string) error {
 
 func (p *CustomParams) ToJSON() ([]byte, error) {
 	par := customParamsJs{
-		Params: p.Params,
-		Custom: map[string]entry{},
+		Parameters: p.Parameters,
+		Custom:     map[string]entry{},
 	}
 
 	for k, v := range p.Custom {
@@ -98,7 +98,7 @@ func (p *CustomParams) ToJSON() ([]byte, error) {
 }
 
 func (p *CustomParams) Apply(world *ecs.World) {
-	p.Params.Apply(world)
+	p.Parameters.Apply(world)
 
 	for tp, res := range p.Custom {
 		id := ecs.ResourceTypeID(world, tp)

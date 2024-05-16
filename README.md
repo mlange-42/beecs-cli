@@ -63,11 +63,13 @@ The default is file `parameters.json` in the working directory. Here is an examp
 
 ```json
 {
-    "Termination": {
-        "MaxTicks": 365
-    },
-    "InitialPopulation": {
-        "Count": 25000
+    "Parameters": {
+        "Termination": {
+            "MaxTicks": 365
+        },
+        "InitialPopulation": {
+            "Count": 25000
+        }
     }
 }
 ```
