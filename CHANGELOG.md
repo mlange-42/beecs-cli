@@ -7,6 +7,7 @@
 - Adds sub-command `init` to create input file templates (#22)
 - Adds support for seasonal and "scripted" patch dynamics (#23)
 - Adds support for weather/foraging period files (#24)
+- Adds support for adding custom resources/parameters (#25)
 
 ### Other
 
