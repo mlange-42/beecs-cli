@@ -99,3 +99,4 @@ jobs:
         xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/weather_file -x params.Termination.MaxTicks=730
         xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/weather_builtin -x params.Termination.MaxTicks=730
         xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/systems --systems systems.json -x params.Termination.MaxTicks=730
+        go run . -d _examples/systems --systems systems.json -e experiment.json -r 10
