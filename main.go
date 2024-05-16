@@ -111,7 +111,7 @@ func RootCommand() *cobra.Command {
 			}
 			var systems []model.System
 			if sysFile != "" {
-				systems, err = util.SystemsFromFile(path.Join(dir, obsFile))
+				systems, err = util.SystemsFromFile(path.Join(dir, sysFile))
 				if err != nil {
 					return err
 				}

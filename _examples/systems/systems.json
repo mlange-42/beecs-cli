@@ -1,0 +1,23 @@
+[
+    "sys.InitStore",
+	"sys.InitCohorts",
+	"sys.InitPopulation",
+	"sys.InitPatchesList",
+
+	"sys.CalcAff",
+	"sys.CalcForagingPeriod",
+	"sys.BroodCare",
+	"sys.AgeCohorts",
+	"sys.TransitionForagers",
+	"sys.EggLaying",
+
+	"sys.MortalityCohorts",
+	"sys.MortalityForagers",
+
+	"sys.Foraging",
+	"sys.HoneyConsumption",
+	"sys.PollenConsumption",
+
+	"sys.CountPopulation",
+	"sys.FixedTermination"
+]
