@@ -3,7 +3,6 @@ package util
 import (
 	"reflect"
 
-	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/obs"
 )
 
@@ -12,22 +11,22 @@ var resourcesRegistry map[string]reflect.Type
 
 func init() {
 	observerRegistry = map[string]reflect.Type{}
-	registerObserver[obs.WorkerCohorts]()
-	registerObserver[obs.ForagingPeriod]()
-	registerObserver[obs.Stores]()
-	registerObserver[obs.PatchNectar]()
-	registerObserver[obs.PatchPollen]()
+	RegisterObserver[obs.WorkerCohorts]()
+	RegisterObserver[obs.ForagingPeriod]()
+	RegisterObserver[obs.Stores]()
+	RegisterObserver[obs.PatchNectar]()
+	RegisterObserver[obs.PatchPollen]()
 
 	resourcesRegistry = map[string]reflect.Type{}
-	registerResource[comp.Age]()
+	//registerResource[comp.Age]()
 }
 
-func registerObserver[T any]() {
+func RegisterObserver[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
 	observerRegistry[tp.String()] = tp
 }
 
-func registerResource[T any]() {
+func RegisterResource[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
 	resourcesRegistry[tp.String()] = tp
 }
