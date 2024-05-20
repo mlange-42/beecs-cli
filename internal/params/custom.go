@@ -8,6 +8,7 @@ import (
 	"reflect"
 
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs-cli/registry"
 	baseparams "github.com/mlange-42/beecs/params"
 )
@@ -102,15 +103,6 @@ func (p *CustomParams) Apply(world *ecs.World) {
 
 	for tp, res := range p.Custom {
 		id := ecs.ResourceTypeID(world, tp)
-
-		v := reflect.Indirect(reflect.ValueOf(res))
-		b := v.Interface()
-
-		val := reflect.ValueOf(b)
-		ptr := reflect.New(val.Type()).Elem()
-		ptr.Set(val)
-
-		world.Resources().Add(id, ptr.Addr().Interface())
+		world.Resources().Add(id, util.CopyInterface[any](res))
 	}
-	fmt.Println(p.Custom)
 }
