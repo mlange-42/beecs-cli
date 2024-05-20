@@ -15,6 +15,11 @@ import (
 	"golang.org/x/exp/rand"
 )
 
+type job struct {
+	Index int
+	Seed  int32
+}
+
 func RunSequential(
 	p params.Params,
 	exp *experiment.Experiment,
@@ -22,7 +27,7 @@ func RunSequential(
 	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, tps float64, seed int,
+	tps float64, seed int,
 ) error {
 	m := amod.New()
 	m.FPS = 30
@@ -49,6 +54,7 @@ func RunSequential(
 	} else {
 		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
+	totalRuns := exp.TotalRuns()
 	for j := 0; j < totalRuns; j++ {
 		result, err := runModel(p, exp, observers, systems, overwrite, m, j, rng.Int31(), totalRuns > 1)
 		if err != nil {
@@ -71,10 +77,11 @@ func RunParallel(
 	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, threads int, tps float64, seed int,
+	threads int, tps float64, seed int,
 ) error {
+	totalRuns := exp.TotalRuns()
 	// Channel for sending jobs to workers (buffered!).
-	jobs := make(chan int, totalRuns)
+	jobs := make(chan job, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
 	results := make(chan Tables, totalRuns)
 
@@ -91,12 +98,12 @@ func RunParallel(
 
 	// Start the workers.
 	for w := 0; w < threads; w++ {
-		go worker(jobs, results, p, exp, observers, systems, overwrite, tps, seeds)
+		go worker(jobs, results, p, exp, observers, systems, overwrite, tps)
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
 	for j := 0; j < totalRuns; j++ {
-		jobs <- j
+		jobs <- job{Index: j, Seed: seeds[j]}
 	}
 	close(jobs)
 
@@ -128,7 +135,10 @@ func RunParallel(
 	return writer.Close()
 }
 
-func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experiment.Experiment, observers *ObserversDef, systems []amod.System, overwrite []experiment.ParameterValue, tps float64, seeds []int32) {
+func worker(jobs <-chan job, results chan<- Tables,
+	p params.Params, exp *experiment.Experiment, observers *ObserversDef,
+	systems []amod.System, overwrite []experiment.ParameterValue, tps float64) {
+
 	m := amod.New()
 	m.FPS = 30
 	m.TPS = tps
@@ -136,7 +146,7 @@ func worker(jobs <-chan int, results chan<- Tables, p params.Params, exp *experi
 	// Process incoming jobs.
 	for j := range jobs {
 		// Run the model.
-		res, err := runModel(p, exp, observers, systems, overwrite, m, j, seeds[j], true)
+		res, err := runModel(p, exp, observers, systems, overwrite, m, j.Index, j.Seed, true)
 		if err != nil {
 			log.Fatal(err)
 		}

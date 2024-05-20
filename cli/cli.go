@@ -102,14 +102,14 @@ func rootCommand() *cobra.Command {
 				if len(expFile) > 1 {
 					return fmt.Errorf("only one (optional) experiment file can be used")
 				}
-				exp, err = util.ExperimentFromFile(path.Join(dir, expFile[0]))
+				seedUsed := uint64(seed)
+				if seed <= 0 {
+					seedUsed = rand.Uint64()
+				}
+				rng := rand.New(rand.NewSource(seedUsed))
+				exp, err = util.ExperimentFromFile(path.Join(dir, expFile[0]), rng, runs)
 				if err != nil {
 					return err
-				}
-				if seed > 0 {
-					exp.Seed(uint64(seed))
-				} else {
-					exp.Seed(rand.Uint64())
 				}
 			}
 
@@ -155,9 +155,9 @@ func rootCommand() *cobra.Command {
 				}
 			}
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, totalRuns, speed, seed)
+				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, seed)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, totalRuns, threads, speed, seed)
+				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, seed)
 			}
 		},
 	}

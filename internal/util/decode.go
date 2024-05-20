@@ -25,7 +25,7 @@ func ParametersFromFile(path string, params *params.DefaultParams) error {
 	return decoder.Decode(params)
 }
 
-func ExperimentFromFile(path string) (experiment.Experiment, error) {
+func ExperimentFromFile(path string, rng *rand.Rand, runs int) (experiment.Experiment, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return experiment.Experiment{}, err
@@ -40,7 +40,7 @@ func ExperimentFromFile(path string) (experiment.Experiment, error) {
 		return experiment.Experiment{}, err
 	}
 
-	return experiment.New(exp, rand.New(rand.NewSource(0)))
+	return experiment.New(exp, rng, runs)
 }
 
 func ObserversDefFromFile(path string) (ObserversDef, error) {
