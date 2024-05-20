@@ -30,16 +30,16 @@ Get CLI help like this:
 beecs-cli -h
 ```
 
-A single, slowed down run of the base example, with live plots:
+A single simulation with live plots, at 30 ticks per second:
 
 ```
-beecs-cli -s 30 -d _examples/base
+beecs-cli -d _examples/base --observers --tps 30
 ```
 
 Run the full base example with parameter variation and 10 runs per parameter set:
 
 ```
-beecs-cli -r 10 -d _examples/base -e experiment.json
+beecs-cli -d _examples/base --experiment -r 10
 ```
 
 Print all default parameters in the tool's input format:
@@ -76,7 +76,7 @@ The default is file `parameters.json` in the working directory. Here is an examp
 
 For any kind of output, an **observers file** is required.
 It specifies which observers for visualizations or file output should be used.
-The default is file `parameters.json` in the working directory. Here is an example:
+Here is an example:
 
 ```json
 {
@@ -89,6 +89,8 @@ The default is file `parameters.json` in the working directory. Here is an examp
     ],
 }
 ```
+
+Observers must be enabled using the `-o` flag. The default is file `observers.json` in the working directory. 
 
 These files are sufficient for single simulations with visual of file output.
 
@@ -113,6 +115,8 @@ Here is an example:
     }
 ]
 ```
+
+Experiments must be enabled using the `-e` flag. The default is file `experiments.json` in the working directory.
 
 > Note: The prefix `params.` is required to unambiguously identify the type of the parameter group to modify.
 

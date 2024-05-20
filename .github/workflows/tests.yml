@@ -93,10 +93,10 @@ jobs:
         go get ./...
     - name: Run examples 1
       run: |
-        xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/base -x params.Termination.MaxTicks=365
-        go run . -r 5 -d _examples/base -e experiment.json -x params.Termination.MaxTicks=365
-        xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/patches -x params.Termination.MaxTicks=365
-        xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/weather_file -x params.Termination.MaxTicks=730
-        xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/weather_builtin -x params.Termination.MaxTicks=730
-        xvfb-run --auto-servernum --server-num=1 go run . -s 120 -d _examples/systems --systems systems.json -x params.Termination.MaxTicks=730
-        go run . -d _examples/systems --systems systems.json -e experiment.json -r 10
+        xvfb-run --auto-servernum --server-num=1 go run . --tps 120 -d _examples/base -x params.Termination.MaxTicks=365
+        go run . -r 5 -d _examples/base -e -x params.Termination.MaxTicks=365
+        xvfb-run --auto-servernum --server-num=1 go run . --tps 120 -d _examples/patches -o -x params.Termination.MaxTicks=365
+        xvfb-run --auto-servernum --server-num=1 go run . --tps 120 -d _examples/weather_file -o -x params.Termination.MaxTicks=730
+        xvfb-run --auto-servernum --server-num=1 go run . --tps 120 -d _examples/weather_builtin -o -x params.Termination.MaxTicks=730
+        xvfb-run --auto-servernum --server-num=1 go run . --tps 120 -d _examples/systems -o -s -x params.Termination.MaxTicks=730
+        go run . -d _examples/systems -o -s -e -r 10
