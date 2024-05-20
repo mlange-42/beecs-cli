@@ -18,6 +18,7 @@ import (
 	"github.com/mlange-42/beecs/experiment"
 	baseparams "github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"golang.org/x/exp/rand"
 )
 
@@ -25,6 +26,7 @@ const (
 	_PARAMETERS = "parameters.json"
 	_OBSERVERS  = "observers.json"
 	_EXPERIMENT = "experiment.json"
+	_SYSTEMS    = "systems.json"
 )
 
 func Run() {
@@ -40,16 +42,17 @@ func rootCommand() *cobra.Command {
 	var dir string
 	var outDir string
 	var paramFiles []string
-	var expFile string
-	var obsFile string
-	var sysFile string
+	var expFile []string
+	var obsFile []string
+	var sysFile []string
 	var speed float64
 	var threads int
 	var runs int
 	var overwrite []string
 	var seed int
 
-	root := &cobra.Command{
+	var root cobra.Command
+	root = cobra.Command{
 		Use:           "beecs-cli",
 		Short:         "beecs-cli provides a command line interface for the beecs model.",
 		Long:          `beecs-cli provides a command line interface for the beecs model.`,
@@ -63,6 +66,11 @@ func rootCommand() *cobra.Command {
 				_ = cmd.Help()
 				os.Exit(0)
 			}
+
+			flagUsed := map[string]bool{}
+			root.Flags().Visit(func(f *pflag.Flag) {
+				flagUsed[f.Name] = true
+			})
 
 			rand.Seed(uint64(time.Now().UTC().Nanosecond()))
 
@@ -90,8 +98,11 @@ func rootCommand() *cobra.Command {
 
 			var exp experiment.Experiment
 			var err error
-			if expFile != "" {
-				exp, err = util.ExperimentFromFile(path.Join(dir, expFile))
+			if flagUsed["experiment"] {
+				if len(expFile) > 1 {
+					return fmt.Errorf("only one (optional) experiment file can be used")
+				}
+				exp, err = util.ExperimentFromFile(path.Join(dir, expFile[0]))
 				if err != nil {
 					return err
 				}
@@ -103,15 +114,21 @@ func rootCommand() *cobra.Command {
 			}
 
 			var observers util.ObserversDef
-			if obsFile != "" {
-				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile))
+			if flagUsed["observers"] {
+				if len(obsFile) > 1 {
+					return fmt.Errorf("only one (optional) observers file can be used")
+				}
+				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile[0]))
 				if err != nil {
 					return err
 				}
 			}
 			var systems []model.System
-			if sysFile != "" {
-				systems, err = util.SystemsFromFile(path.Join(dir, sysFile))
+			if flagUsed["systems"] {
+				if len(sysFile) > 1 {
+					return fmt.Errorf("only one (optional) systems file can be used")
+				}
+				systems, err = util.SystemsFromFile(path.Join(dir, sysFile[0]))
 				if err != nil {
 					return err
 				}
@@ -147,11 +164,21 @@ func rootCommand() *cobra.Command {
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
-	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS}, "Parameter files, processed in the given order")
-	root.Flags().StringVarP(&expFile, "experiment", "e", "", "Experiment file for parameter variation")
-	root.Flags().StringVarP(&obsFile, "observers", "o", _OBSERVERS, "Observers file for adding observers")
-	root.Flags().StringVarP(&sysFile, "systems", "", "", "Systems file for using custom systems or changing the scheduling")
-	root.Flags().Float64VarP(&speed, "speed", "s", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS}, "Parameter files, processed in the given order\n")
+
+	root.Flags().StringSliceVarP(&expFile, "experiment", "e", []string{_EXPERIMENT},
+		"Run experiment. Optionally one experiment file for parameter variation\n")
+	root.Flag("experiment").NoOptDefVal = _EXPERIMENT
+
+	root.Flags().StringSliceVarP(&obsFile, "observers", "o", []string{_OBSERVERS},
+		"Run with observers. Optionally one observers file for adding observers\n")
+	root.Flag("observers").NoOptDefVal = _OBSERVERS
+
+	root.Flags().StringSliceVarP(&sysFile, "systems", "s", []string{_SYSTEMS},
+		"Run with custom systems. Optionally one systems file for using custom systems or changing the scheduling\n")
+	root.Flag("systems").NoOptDefVal = _SYSTEMS
+
+	root.Flags().Float64VarP(&speed, "speed", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
@@ -160,7 +187,7 @@ func rootCommand() *cobra.Command {
 	root.AddCommand(initCommand())
 	root.AddCommand(parametersCommand())
 
-	return root
+	return &root
 }
 
 func parametersCommand() *cobra.Command {
