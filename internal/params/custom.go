@@ -8,6 +8,7 @@ import (
 	"reflect"
 
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs-cli/registry"
 	baseparams "github.com/mlange-42/beecs/params"
 )
@@ -67,7 +68,7 @@ func (p *CustomParams) FromJSON(path string) error {
 
 		decoder := json.NewDecoder(bytes.NewReader(entry.Bytes))
 		decoder.DisallowUnknownFields()
-		if err := decoder.Decode(&resourceVal); err != nil {
+		if err := decoder.Decode(resourceVal); err != nil {
 			return err
 		}
 
@@ -102,6 +103,6 @@ func (p *CustomParams) Apply(world *ecs.World) {
 
 	for tp, res := range p.Custom {
 		id := ecs.ResourceTypeID(world, tp)
-		world.Resources().Add(id, res)
+		world.Resources().Add(id, util.CopyInterface[any](res))
 	}
 }
