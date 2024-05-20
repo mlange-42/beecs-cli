@@ -30,16 +30,16 @@ Get CLI help like this:
 beecs-cli -h
 ```
 
-A single simulation with live plots, at 30 FPS:
+A single simulation with live plots, at 30 ticks per second:
 
 ```
-beecs-cli -d _examples/base -s 30
+beecs-cli -d _examples/base --observers --tps 30
 ```
 
 Run the full base example with parameter variation and 10 runs per parameter set:
 
 ```
-beecs-cli -d _examples/base -r 10 -e
+beecs-cli -d _examples/base --experiment -r 10
 ```
 
 Print all default parameters in the tool's input format:

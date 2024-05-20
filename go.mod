@@ -8,6 +8,7 @@ require (
 	github.com/mlange-42/arche-pixel v0.9.0
 	github.com/mlange-42/beecs v0.1.1-0.20240520193329-cfbd62899b75
 	github.com/spf13/cobra v1.8.0
+	github.com/spf13/pflag v1.0.5
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 )
 
@@ -31,7 +32,6 @@ require (
 	github.com/mazznoer/csscolorparser v0.1.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect

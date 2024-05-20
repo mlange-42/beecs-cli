@@ -178,7 +178,7 @@ func rootCommand() *cobra.Command {
 		"Run with custom systems. Optionally one systems file for using custom systems or changing the scheduling\n")
 	root.Flag("systems").NoOptDefVal = _SYSTEMS
 
-	root.Flags().Float64VarP(&speed, "speed", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
+	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
