@@ -134,12 +134,8 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
-			numSets := exp.ParameterSets()
-			if numSets == 0 {
-				numSets = 1
-			}
-			totalRuns := numSets * runs
-			if totalRuns == 1 {
+			totalRuns := exp.TotalRuns()
+			if totalRuns <= 1 {
 				threads = 1
 			}
 

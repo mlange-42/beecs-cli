@@ -55,6 +55,9 @@ func RunSequential(
 		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
 	totalRuns := exp.TotalRuns()
+	if totalRuns == 0 {
+		totalRuns = 1
+	}
 	for j := 0; j < totalRuns; j++ {
 		result, err := runModel(p, exp, observers, systems, overwrite, m, j, rng.Int31(), totalRuns > 1)
 		if err != nil {
