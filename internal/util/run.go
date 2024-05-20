@@ -22,7 +22,7 @@ func RunSequential(
 	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, tps float64, seed int,
+	tps float64, seed int,
 ) error {
 	m := amod.New()
 	m.FPS = 30
@@ -49,6 +49,7 @@ func RunSequential(
 	} else {
 		rng = rand.New(rand.NewSource(rand.Uint64()))
 	}
+	totalRuns := exp.TotalRuns()
 	for j := 0; j < totalRuns; j++ {
 		result, err := runModel(p, exp, observers, systems, overwrite, m, j, rng.Int31(), totalRuns > 1)
 		if err != nil {
@@ -71,8 +72,9 @@ func RunParallel(
 	systems []amod.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
-	totalRuns int, threads int, tps float64, seed int,
+	threads int, tps float64, seed int,
 ) error {
+	totalRuns := exp.TotalRuns()
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan int, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
