@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/beecs-cli)](https://goreportcard.com/report/github.com/mlange-42/beecs-cli)
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/beecs-cli)
 
-Command line interface for the [beecs](https://github.com/mlange-42/beecs) honeybee model.
+Command line interface for the [beecs](https://github.com/mlange-42/beecs) honeybee model and derivatives.
 
 ## Purpose
 
@@ -22,7 +22,7 @@ To install the latest development version using [Go](https://go.dev), run:
 go install github.com/mlange-42/beecs-cli@main
 ```
 
-## Usage
+## CLI usage
 
 Get CLI help like this:
 
@@ -54,7 +54,15 @@ Create input file templates in the current directory:
 beecs-cli init
 ```
 
-### Input files
+## Library usage
+
+With beecs-cli, it also is possible to fully parameterize models derived from the original [beecs](https://github.com/mlange-42/beecs) model,
+although they use custom systems and/or parameters and global state variables.
+
+An example for how to modify [beecs](https://github.com/mlange-42/beecs) while using beecs-cli is provided by the repository [beecs-template](https://github.com/mlange-42/beecs-template).
+
+
+## Input files
 
 All file locations are relative to the working directory given by `-d` (defaults to the current directory).
 
