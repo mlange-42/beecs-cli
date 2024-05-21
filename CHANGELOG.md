@@ -11,6 +11,7 @@
 - Rework of the command line interface for a simpler syntax when using default file names (#29, #36)
 - Allow for multiple runs without providing an experiment (#33)
 - Random seed is stored in experiments, but can be overwritten via CLI (#34)
+- Record start and end time of each run in parameters output file (#37)
 
 ### Other
 
