@@ -129,6 +129,7 @@ func rootCommand() *cobra.Command {
 					return err
 				}
 			}
+
 			var systems []model.System
 			if flagUsed["systems"] {
 				if len(sysFile) > 1 {
@@ -150,6 +151,10 @@ func rootCommand() *cobra.Command {
 					Parameter: parts[0],
 					Value:     parts[1],
 				}
+			}
+
+			if exp.TotalRuns() <= 1 {
+				threads = 1
 			}
 			if threads <= 1 {
 				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng)
