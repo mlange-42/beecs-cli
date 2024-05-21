@@ -51,7 +51,7 @@ func runModel(
 		m.Seed(uint64(rSeed))
 	}
 
-	obs, err := observers.CreateObservers()
+	obs, err := observers.CreateObservers(!noUi)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,7 +92,7 @@ func runModel(
 	}
 
 	if !noUi {
-		for _, p := range obs.TimeSeriesPlots {
+		for _, p := range obs.Windows {
 			m.AddUISystem(p)
 		}
 	}
