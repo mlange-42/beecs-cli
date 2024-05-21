@@ -10,8 +10,13 @@
 - Adds support for adding custom resources/parameters as well as systems (#25)
 - Rework of the command line interface for a simpler syntax when using default file names (#29)
 - Allow for multiple runs without providing an experiment (#33)
+- Random seed is stored in experiments, but can be overwritten via CLI (#34)
 
 ### Other
 
 - Show plots only when a single run is performed (#19)
 - Restructured code for use as a library/module (#26)
+
+## [[v0.1.0]](https://github.com/mlange-42/beecs-cli/tree/v0.1.0)
+
+Initial release of beecs-cli.

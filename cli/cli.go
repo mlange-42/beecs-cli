@@ -96,23 +96,23 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
-			seedUsed := uint64(seed)
-			if seed <= 0 {
-				seedUsed = rand.Uint64()
-			}
-			rng := rand.New(rand.NewSource(seedUsed))
-
 			var exp experiment.Experiment
+			var rng *rand.Rand
 			var err error
 			if flagUsed["experiment"] {
 				if len(expFile) > 1 {
 					return fmt.Errorf("only one (optional) experiment file can be used")
 				}
-				exp, err = util.ExperimentFromFile(path.Join(dir, expFile[0]), rng, runs)
+				exp, rng, err = util.ExperimentFromFile(path.Join(dir, expFile[0]), runs, seed)
 				if err != nil {
 					return err
 				}
 			} else {
+				seedUsed := uint64(seed)
+				if seed <= 0 {
+					seedUsed = rand.Uint64()
+				}
+				rng = rand.New(rand.NewSource(seedUsed))
 				exp, err = experiment.New([]experiment.ParameterVariation{}, rng, runs)
 				if err != nil {
 					return err
@@ -152,9 +152,9 @@ func rootCommand() *cobra.Command {
 				}
 			}
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, seed)
+				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, seed)
+				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng)
 			}
 		},
 	}
@@ -178,7 +178,10 @@ func rootCommand() *cobra.Command {
 	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
-	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
+
+	root.Flags().IntVarP(&seed, "seed", "", 0,
+		"Overwrite experiment super random seed for seed generation. Default: don't overwrite.\nUse -1 to force random seeding")
+
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
 	root.AddCommand(initCommand())
