@@ -25,7 +25,7 @@ func ParametersFromFile(path string, params *params.DefaultParams) error {
 	return decoder.Decode(params)
 }
 
-type experimentJs struct {
+type ExperimentJs struct {
 	Seed       uint32
 	Parameters []experiment.ParameterVariation
 }
@@ -37,7 +37,7 @@ func ExperimentFromFile(path string, runs int, seed int) (experiment.Experiment,
 	}
 	defer file.Close()
 
-	var expJs experimentJs
+	var expJs ExperimentJs
 
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()

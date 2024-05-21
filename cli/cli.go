@@ -287,14 +287,16 @@ func initCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
-			e := []experiment.ParameterVariation{
-				{
-					Parameter: "params.InitialStores.Honey",
-					SequenceFloatRange: &experiment.SequenceFloatRange{
-						Min:    10,
-						Max:    100,
-						Values: 10,
+			e := util.ExperimentJs{
+				Seed: 1,
+				Parameters: []experiment.ParameterVariation{
+					{
+						Parameter: "params.InitialStores.Honey",
+						SequenceFloatRange: &experiment.SequenceFloatRange{
+							Min:    10,
+							Max:    100,
+							Values: 10,
+						},
 					},
 				},
 			}
