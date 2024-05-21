@@ -16,3 +16,7 @@
 
 - Show plots only when a single run is performed (#19)
 - Restructured code for use as a library/module (#26)
+
+## [[v0.1.0]](https://github.com/mlange-42/beecs-cli/tree/v0.1.0)
+
+Initial release of beecs-cli.
