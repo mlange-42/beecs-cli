@@ -5,6 +5,7 @@ import (
 	"log"
 	"path"
 	"reflect"
+	"time"
 
 	amod "github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-pixel/window"
@@ -190,9 +191,10 @@ func runModel(
 		Data:    make([][][]float64, len(obs.Tables)+1),
 	}
 
+	now := time.Now().UnixMilli()
 	seed := ecs.GetResource[params.RandomSeed](&m.World).Seed
-	result.Headers[0] = []string{"Run", "Seed"}
-	result.Data[0] = [][]float64{{float64(idx), float64(seed)}}
+	result.Headers[0] = []string{"Run", "Seed", "Started", "Finished"}
+	result.Data[0] = [][]float64{{float64(idx), float64(seed), float64(now), 0}}
 	for _, v := range values {
 		result.Headers[0] = append(result.Headers[0], v.Parameter)
 		floatValue := toFloat(v.Value)
@@ -229,6 +231,9 @@ func runModel(
 	} else {
 		window.Run(m)
 	}
+
+	now = time.Now().UnixMilli()
+	result.Data[0][0][3] = float64(now)
 
 	return result, nil
 }
