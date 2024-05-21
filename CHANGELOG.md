@@ -10,6 +10,7 @@
 - Adds support for adding custom resources/parameters as well as systems (#25)
 - Rework of the command line interface for a simpler syntax when using default file names (#29)
 - Allow for multiple runs without providing an experiment (#33)
+- Random seed is stored in experiments, but can be overwritten via CLI (#34)
 
 ### Other
 
