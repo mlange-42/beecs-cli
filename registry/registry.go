@@ -25,6 +25,7 @@ func init() {
 	RegisterSystem[sys.InitCohorts]()
 	RegisterSystem[sys.InitPopulation]()
 	RegisterSystem[sys.InitPatchesList]()
+	RegisterSystem[sys.InitForagingPeriod]()
 
 	RegisterSystem[sys.CalcAff]()
 	RegisterSystem[sys.CalcForagingPeriod]()

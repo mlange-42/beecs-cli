@@ -3,6 +3,7 @@
 	"sys.InitCohorts",
 	"sys.InitPopulation",
 	"sys.InitPatchesList",
+	"sys.InitForagingPeriod",
 
 	"sys.CalcAff",
 	"sys.CalcForagingPeriod",
