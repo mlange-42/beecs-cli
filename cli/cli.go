@@ -14,6 +14,7 @@ import (
 
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/beecs-cli/internal/params"
+	"github.com/mlange-42/beecs-cli/internal/run"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	baseparams "github.com/mlange-42/beecs/params"
@@ -148,9 +149,9 @@ func rootCommand() *cobra.Command {
 				threads = 1
 			}
 			if threads <= 1 {
-				return util.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng)
+				return run.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng)
 			} else {
-				return util.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng)
+				return run.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng)
 			}
 		},
 	}

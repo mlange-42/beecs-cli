@@ -47,44 +47,70 @@ type ObserversDef struct {
 	CsvSeparator    string
 	TimeSeriesPlots []TimeSeriesPlotDef
 	Tables          []TableDef
+	Monitor         bool
+	Inspector       bool
+	Systems         bool
 }
 
-func (obs *ObserversDef) CreateObservers() (Observers, error) {
+func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 	tsPlots := []*window.Window{}
-	for _, p := range obs.TimeSeriesPlots {
-		tp, ok := registry.GetObserver(p.Observer)
-		if !ok {
-			return Observers{}, fmt.Errorf("observer type '%s' is not registered", p.Observer)
-		}
-		observerVal := reflect.New(tp).Interface()
-		if len(p.Params.Bytes) == 0 {
-			p.Params.Bytes = []byte("{}")
+	if withUI {
+		for _, p := range obs.TimeSeriesPlots {
+			tp, ok := registry.GetObserver(p.Observer)
+			if !ok {
+				return Observers{}, fmt.Errorf("observer type '%s' is not registered", p.Observer)
+			}
+			observerVal := reflect.New(tp).Interface()
+			if len(p.Params.Bytes) == 0 {
+				p.Params.Bytes = []byte("{}")
+			}
+
+			decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+			decoder.DisallowUnknownFields()
+			if err := decoder.Decode(&observerVal); err != nil {
+				return Observers{}, err
+			}
+			obsCast, ok := observerVal.(observer.Row)
+			if !ok {
+				return Observers{}, fmt.Errorf("type '%s' is not a Row observer", tp.String())
+			}
+			win := &window.Window{
+				Title:        p.Title,
+				Bounds:       p.Bounds,
+				DrawInterval: p.DrawInterval,
+			}
+			win = win.With(&plot.TimeSeries{
+				Observer:       obsCast,
+				Columns:        p.Columns,
+				UpdateInterval: p.UpdateInterval,
+				Labels:         p.Labels,
+				MaxRows:        p.MaxRows,
+			})
+			win = win.With(&plot.Controls{})
+
+			tsPlots = append(tsPlots, win)
 		}
 
-		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
-		decoder.DisallowUnknownFields()
-		if err := decoder.Decode(&observerVal); err != nil {
-			return Observers{}, err
+		if obs.Monitor {
+			win := (&window.Window{}).
+				With(&plot.Monitor{}).
+				With(&plot.Controls{})
+			tsPlots = append(tsPlots, win)
 		}
-		obsCast, ok := observerVal.(observer.Row)
-		if !ok {
-			return Observers{}, fmt.Errorf("type '%s' is not a Row observer", tp.String())
-		}
-		win := &window.Window{
-			Title:        p.Title,
-			Bounds:       p.Bounds,
-			DrawInterval: p.DrawInterval,
-		}
-		win = win.With(&plot.TimeSeries{
-			Observer:       obsCast,
-			Columns:        p.Columns,
-			UpdateInterval: p.UpdateInterval,
-			Labels:         p.Labels,
-			MaxRows:        p.MaxRows,
-		})
-		win = win.With(&plot.Controls{})
 
-		tsPlots = append(tsPlots, win)
+		if obs.Inspector {
+			win := (&window.Window{}).
+				With(&plot.Resources{}).
+				With(&plot.Controls{})
+			tsPlots = append(tsPlots, win)
+		}
+
+		if obs.Systems {
+			win := (&window.Window{}).
+				With(&plot.Systems{}).
+				With(&plot.Controls{})
+			tsPlots = append(tsPlots, win)
+		}
 	}
 
 	tables := []*reporter.Callback{}
@@ -117,12 +143,12 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 	}
 
 	return Observers{
-		TimeSeriesPlots: tsPlots,
-		Tables:          tables,
+		Windows: tsPlots,
+		Tables:  tables,
 	}, nil
 }
 
 type Observers struct {
-	TimeSeriesPlots []*window.Window
-	Tables          []*reporter.Callback
+	Windows []*window.Window
+	Tables  []*reporter.Callback
 }

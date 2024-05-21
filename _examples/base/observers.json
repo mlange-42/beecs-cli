@@ -1,6 +1,9 @@
 {
     "CsvSeparator": ";",
     "Parameters": "out/Parameters.csv",
+    "Monitor": true,
+    "Inspector": true,
+    "Systems": true,
     "Tables": [
         {
             "Observer": "obs.WorkerCohorts",
