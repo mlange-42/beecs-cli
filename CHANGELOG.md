@@ -13,6 +13,7 @@
 - Random seed is stored in experiments, but can be overwritten via CLI (#34)
 - Record start and end time of each run in parameters output file (#37)
 - Add JSON property `Final` to table output to write rows on finalization only (#38)
+- Provides more visualizations, like ECS monitor and resources and systems inspector (#39) 
 
 ### Other
 
