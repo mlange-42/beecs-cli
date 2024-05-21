@@ -96,18 +96,24 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
+			seedUsed := uint64(seed)
+			if seed <= 0 {
+				seedUsed = rand.Uint64()
+			}
+			rng := rand.New(rand.NewSource(seedUsed))
+
 			var exp experiment.Experiment
 			var err error
 			if flagUsed["experiment"] {
 				if len(expFile) > 1 {
 					return fmt.Errorf("only one (optional) experiment file can be used")
 				}
-				seedUsed := uint64(seed)
-				if seed <= 0 {
-					seedUsed = rand.Uint64()
-				}
-				rng := rand.New(rand.NewSource(seedUsed))
 				exp, err = util.ExperimentFromFile(path.Join(dir, expFile[0]), rng, runs)
+				if err != nil {
+					return err
+				}
+			} else {
+				exp, err = experiment.New([]experiment.ParameterVariation{}, rng, runs)
 				if err != nil {
 					return err
 				}
@@ -132,11 +138,6 @@ func rootCommand() *cobra.Command {
 				if err != nil {
 					return err
 				}
-			}
-
-			totalRuns := exp.TotalRuns()
-			if totalRuns <= 1 {
-				threads = 1
 			}
 
 			overwriteParams := make([]experiment.ParameterValue, len(overwrite))
