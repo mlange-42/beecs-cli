@@ -25,14 +25,19 @@ func ParametersFromFile(path string, params *params.DefaultParams) error {
 	return decoder.Decode(params)
 }
 
-func ExperimentFromFile(path string, rng *rand.Rand, runs int) (experiment.Experiment, error) {
+type experimentJs struct {
+	Seed       uint32
+	Parameters []experiment.ParameterVariation
+}
+
+func ExperimentFromFile(path string, runs int, seed int) (experiment.Experiment, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return experiment.Experiment{}, err
 	}
 	defer file.Close()
 
-	var exp []experiment.ParameterVariation
+	var exp experimentJs
 
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()
@@ -40,7 +45,15 @@ func ExperimentFromFile(path string, rng *rand.Rand, runs int) (experiment.Exper
 		return experiment.Experiment{}, err
 	}
 
-	return experiment.New(exp, rng, runs)
+	if seed <= 0 {
+		seed = int(exp.Seed)
+	}
+	if seed == 0 {
+		seed = int(rand.Uint32())
+	}
+	rng := rand.New(rand.NewSource(uint64(seed)))
+
+	return experiment.New(exp.Parameters, rng, runs)
 }
 
 func ObserversDefFromFile(path string) (ObserversDef, error) {
