@@ -39,6 +39,7 @@ type TableDef struct {
 	Observer       string
 	Params         entry
 	UpdateInterval int
+	Final          bool
 }
 
 type ObserversDef struct {
@@ -110,6 +111,7 @@ func (obs *ObserversDef) CreateObservers() (Observers, error) {
 			UpdateInterval: t.UpdateInterval,
 			HeaderCallback: func(header []string) {},
 			Callback:       func(step int, row []float64) {},
+			Final:          t.Final,
 		}
 		tables = append(tables, rep)
 	}
