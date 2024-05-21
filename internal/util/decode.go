@@ -45,10 +45,9 @@ func ExperimentFromFile(path string, runs int, seed int) (experiment.Experiment,
 		return experiment.Experiment{}, err
 	}
 
-	if seed <= 0 {
-		seed = int(exp.Seed)
-	}
 	if seed == 0 {
+		seed = int(exp.Seed)
+	} else if seed < 0 {
 		seed = int(rand.Uint32())
 	}
 	rng := rand.New(rand.NewSource(uint64(seed)))

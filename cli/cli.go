@@ -177,7 +177,10 @@ func rootCommand() *cobra.Command {
 	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
-	root.Flags().IntVarP(&seed, "seed", "", 0, "Super random seed for seed generation. Default: 0 (unseeded)")
+
+	root.Flags().IntVarP(&seed, "seed", "", 0,
+		"Overwrite experiment super random seed for seed generation. Default: don't overwrite.\nUse -1 to force random seeding")
+
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
 
 	root.AddCommand(initCommand())
