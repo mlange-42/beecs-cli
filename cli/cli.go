@@ -42,9 +42,9 @@ func rootCommand() *cobra.Command {
 	var dir string
 	var outDir string
 	var paramFiles []string
-	var expFile []string
-	var obsFile []string
-	var sysFile []string
+	var expFile string
+	var obsFile string
+	var sysFile string
 	var speed float64
 	var threads int
 	var runs int
@@ -100,10 +100,7 @@ func rootCommand() *cobra.Command {
 			var rng *rand.Rand
 			var err error
 			if flagUsed["experiment"] {
-				if len(expFile) > 1 {
-					return fmt.Errorf("only one (optional) experiment file can be used")
-				}
-				exp, rng, err = util.ExperimentFromFile(path.Join(dir, expFile[0]), runs, seed)
+				exp, rng, err = util.ExperimentFromFile(path.Join(dir, expFile), runs, seed)
 				if err != nil {
 					return err
 				}
@@ -121,10 +118,7 @@ func rootCommand() *cobra.Command {
 
 			var observers util.ObserversDef
 			if flagUsed["observers"] {
-				if len(obsFile) > 1 {
-					return fmt.Errorf("only one (optional) observers file can be used")
-				}
-				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile[0]))
+				observers, err = util.ObserversDefFromFile(path.Join(dir, obsFile))
 				if err != nil {
 					return err
 				}
@@ -132,10 +126,7 @@ func rootCommand() *cobra.Command {
 
 			var systems []model.System
 			if flagUsed["systems"] {
-				if len(sysFile) > 1 {
-					return fmt.Errorf("only one (optional) systems file can be used")
-				}
-				systems, err = util.SystemsFromFile(path.Join(dir, sysFile[0]))
+				systems, err = util.SystemsFromFile(path.Join(dir, sysFile))
 				if err != nil {
 					return err
 				}
@@ -166,28 +157,30 @@ func rootCommand() *cobra.Command {
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
-	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS}, "Parameter files, processed in the given order\n")
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS},
+		"Parameter files, processed in the given order\n")
 
-	root.Flags().StringSliceVarP(&expFile, "experiment", "e", []string{_EXPERIMENT},
-		"Run experiment. Optionally one experiment file for parameter variation\n")
+	root.Flags().StringVarP(&expFile, "experiment", "e", "",
+		"Run experiment.\n Optionally, provide an experiment file for parameter variation")
 	root.Flag("experiment").NoOptDefVal = _EXPERIMENT
 
-	root.Flags().StringSliceVarP(&obsFile, "observers", "o", []string{_OBSERVERS},
-		"Run with observers. Optionally one observers file for adding observers\n")
+	root.Flags().StringVarP(&obsFile, "observers", "o", "",
+		"Run with observers.\n Optionally, provide an observers file for adding observers")
 	root.Flag("observers").NoOptDefVal = _OBSERVERS
 
-	root.Flags().StringSliceVarP(&sysFile, "systems", "s", []string{_SYSTEMS},
-		"Run with custom systems. Optionally one systems file for using custom systems or changing the scheduling\n")
+	root.Flags().StringVarP(&sysFile, "systems", "s", "",
+		"Run with custom systems.\n Optionally, provide a systems file for using custom systems\n or changing the scheduling")
 	root.Flag("systems").NoOptDefVal = _SYSTEMS
 
-	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
-	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
-	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
-
 	root.Flags().IntVarP(&seed, "seed", "", 0,
-		"Overwrite experiment super random seed for seed generation. Default: don't overwrite.\nUse -1 to force random seeding")
+		"Overwrite experiment super random seed for seed generation.\n Default: don't overwrite.\n Use -1 to force random seeding")
 
 	root.Flags().StringSliceVarP(&overwrite, "overwrite", "x", []string{}, "Overwrite variables like key1=value1,key2=value2")
+	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
+	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
+	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
+
+	root.Flags().SortFlags = false
 
 	root.AddCommand(initCommand())
 	root.AddCommand(parametersCommand())

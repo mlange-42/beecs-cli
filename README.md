@@ -39,7 +39,7 @@ beecs-cli -d _examples/base --observers --tps 30
 Run the full base example with parameter variation and 10 runs per parameter set:
 
 ```
-beecs-cli -d _examples/base --experiment -r 10
+beecs-cli -d _examples/base --observers --experiment -r 10
 ```
 
 Print all default parameters in the tool's input format:
