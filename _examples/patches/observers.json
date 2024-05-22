@@ -1,4 +1,5 @@
 {
+    "PatchView": true,
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",

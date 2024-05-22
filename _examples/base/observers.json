@@ -2,7 +2,7 @@
     "CsvSeparator": ";",
     "Parameters": "out/Parameters.csv",
     "Monitor": true,
-    "Inspector": true,
+    "Resources": true,
     "Systems": true,
     "Tables": [
         {
