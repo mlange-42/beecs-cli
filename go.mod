@@ -7,11 +7,10 @@ require (
 	github.com/mlange-42/arche v0.13.0
 	github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180
 	github.com/mlange-42/arche-pixel v0.9.0
-	github.com/mlange-42/beecs v0.1.1-0.20240522201420-3a97d5980b07
+	github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
-	gonum.org/v1/plot v0.14.0
 )
 
 require (
@@ -36,4 +35,5 @@ require (
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
+	gonum.org/v1/plot v0.14.0 // indirect
 )

@@ -18,6 +18,8 @@ func init() {
 	RegisterObserver[obs.Stores]()
 	RegisterObserver[obs.PatchNectar]()
 	RegisterObserver[obs.PatchPollen]()
+	RegisterObserver[obs.NectarVisits]()
+	RegisterObserver[obs.PollenVisits]()
 
 	//RegisterResource[...]()
 

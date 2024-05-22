@@ -51,7 +51,7 @@ type ObserversDef struct {
 	Monitor         bool // Show the ECS monitor.
 	Resources       bool // Show the resources inspector.
 	Systems         bool // Show the systems inspector.
-	PatchView       bool // Show the flower patches view.
+	ForagingView    bool // Show the flower patch foraging view.
 }
 
 func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
@@ -114,7 +114,7 @@ func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 			tsPlots = append(tsPlots, win)
 		}
 
-		if obs.PatchView {
+		if obs.ForagingView {
 			win := (&window.Window{}).
 				With(&view.Foraging{}).
 				With(&plot.Controls{})

@@ -1,5 +1,5 @@
 {
-    "PatchView": true,
+    "ForagingView": true,
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
