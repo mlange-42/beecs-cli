@@ -51,8 +51,8 @@ github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180 h1:R1u8Xj5
 github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180/go.mod h1:5Pzd3iAgdGNTiMgFJxHdc6a7qoaQPBK9xmyhrKTMmV8=
 github.com/mlange-42/arche-pixel v0.9.0 h1:UhHXUjSpvbKeJgRiWQWGYPrNbnu+007U9HaBBgW7uOY=
 github.com/mlange-42/arche-pixel v0.9.0/go.mod h1:UWr4ZfpvreTRWr76dqi30VCax19kEbiSDSNrbZTbMDQ=
-github.com/mlange-42/beecs v0.1.1-0.20240522192430-609bf4f916fe h1:amovK8Ki3TH11PI+2aMEMsIQFjdQnoLtL4U3Gaf740s=
-github.com/mlange-42/beecs v0.1.1-0.20240522192430-609bf4f916fe/go.mod h1:dD3tTgxU6yczpKhErCY2BA65FdS3Ye0pwK6P/JE4JzQ=
+github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69 h1:v4w91bVmHwRJdhbsiWUg5UhKquZJdYNoJI2rTpy5VlI=
+github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69/go.mod h1:dD3tTgxU6yczpKhErCY2BA65FdS3Ye0pwK6P/JE4JzQ=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

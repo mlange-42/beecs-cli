@@ -1,6 +1,6 @@
 [
     {
-        "DistToColony": 500,
+        "DistToColony": 2000,
         "ConstantPatch": {
             "Nectar": 20,
             "Pollen": 1,

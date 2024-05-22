@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
 	"github.com/mlange-42/beecs-cli/registry"
+	"github.com/mlange-42/beecs-cli/view"
 )
 
 type entry struct {
@@ -47,9 +48,10 @@ type ObserversDef struct {
 	CsvSeparator    string
 	TimeSeriesPlots []TimeSeriesPlotDef
 	Tables          []TableDef
-	Monitor         bool
-	Inspector       bool
-	Systems         bool
+	Monitor         bool // Show the ECS monitor.
+	Resources       bool // Show the resources inspector.
+	Systems         bool // Show the systems inspector.
+	ForagingView    bool // Show the flower patch foraging view.
 }
 
 func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
@@ -98,7 +100,7 @@ func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 			tsPlots = append(tsPlots, win)
 		}
 
-		if obs.Inspector {
+		if obs.Resources {
 			win := (&window.Window{}).
 				With(&plot.Resources{}).
 				With(&plot.Controls{})
@@ -108,6 +110,13 @@ func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 		if obs.Systems {
 			win := (&window.Window{}).
 				With(&plot.Systems{}).
+				With(&plot.Controls{})
+			tsPlots = append(tsPlots, win)
+		}
+
+		if obs.ForagingView {
+			win := (&window.Window{}).
+				With(&view.Foraging{}).
 				With(&plot.Controls{})
 			tsPlots = append(tsPlots, win)
 		}
