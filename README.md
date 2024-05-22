@@ -6,11 +6,13 @@
 
 Command line interface for the [beecs](https://github.com/mlange-42/beecs) honeybee model and derivatives.
 
-## Purpose
+## Features
 
 * Model parametrization from JSON files.
-* Systematic, parallel simulations with parameter variation, configured with JSON.
-* Running single simulations with various real-time visualizations.
+* Parallelized simulation experiments, with parameter variation configured via JSON.
+* 100% reproducible simulation experiments.
+* Various real-time visualizations for debugging and model exploration.
+* All this, even for derived models with altered sub-models, state variables etc.
 
 ## Installation
 
@@ -106,22 +108,25 @@ With a further **experiment file**, parameters can be systematically varied in v
 Here is an example:
 
 ```json
-[
-    {
-        "Parameter": "params.Nursing.MaxBroodNurseRatio",
-        "SequenceFloatRange": {
-            "Min": 2.0,
-            "Max": 4.0,
-            "Values": 11
+{
+    "Seed": 123,
+    "Parameters": [
+        {
+            "Parameter": "params.Nursing.MaxBroodNurseRatio",
+            "SequenceFloatRange": {
+                "Min": 2.0,
+                "Max": 4.0,
+                "Values": 11
+            }
+        },
+        {
+            "Parameter": "params.Nursing.ForagerNursingContribution",
+            "SequenceFloatValues": {
+                "Values": [0, 0.25, 0.5]
+            }
         }
-    },
-    {
-        "Parameter": "params.Nursing.ForagerNursingContribution",
-        "SequenceFloatValues": {
-            "Values": [0, 0.25, 0.5]
-        }
-    }
-]
+    ]
+}
 ```
 
 Experiments must be enabled using the `-e` flag. The default is file `experiments.json` in the working directory.
