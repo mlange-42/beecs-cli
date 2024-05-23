@@ -18,6 +18,7 @@
 - Adds line plots for a full plot per update, like foraging stats (#44)
 - Adds CSV output for snapshot table observers (#45)
 - Adds a command line option `--index` for selecting simulation runs of an experiment (#46)
+- Allows to seed individual runs with `-x params.RandomSeed.Seed=123` (#47)
 
 ### Other
 
