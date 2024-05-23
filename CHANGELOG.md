@@ -15,6 +15,7 @@
 - Add JSON property `Final` to table output to write rows on finalization only (#38)
 - Provides more visualizations, like ECS monitor and resources and systems inspector (#39, #43)
 - Adds a view for the visualization of patch resources, visits, and colony status (#42, #43)
+- Adds line plots for a full plot per update, like foraging stats (#44)
 
 ### Other
 

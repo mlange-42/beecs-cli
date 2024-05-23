@@ -1,6 +1,9 @@
 {
     "Views": [
-        {"Drawer": "view.Foraging"}
+        {
+            "Drawer": "view.Foraging",
+            "Bounds": {"X": 1220, "Y": 30, "W": 660, "H": 660}
+        }
     ],
     "TimeSeriesPlots": [
         {
@@ -11,7 +14,7 @@
             "DrawInterval": 5,
             "MaxRows": 730,
             "Labels": {"Title": "WorkerCohorts", "X": "Time [d]", "Y": "Count"},
-            "Bounds": {"X": 1, "Y": 30, "W": 600, "H": 400}
+            "Bounds": {"X": 1, "Y": 30, "W": 600, "H": 300}
         },
         {
             "Observer": "obs.Stores",
@@ -22,21 +25,32 @@
             "DrawInterval": 5,
             "MaxRows": 730,
             "Labels": {"Title": "Stores", "X": "Time [d]", "Y": "Amount [kg]"},
-            "Bounds": {"X": 1, "Y": 470, "W": 600, "H": 400}
+            "Bounds": {"X": 1, "Y": 370, "W": 600, "H": 300}
         },
         {
             "Observer": "obs.PatchNectar",
             "DrawInterval": 5,
             "MaxRows": 730,
             "Labels": {"Title": "Nectar", "X": "Time [d]", "Y": "Amount [L]"},
-            "Bounds": {"X": 610, "Y": 30, "W": 600, "H": 400}
+            "Bounds": {"X": 610, "Y": 30, "W": 600, "H": 300}
         },
         {
             "Observer": "obs.PatchPollen",
             "DrawInterval": 5,
             "MaxRows": 730,
             "Labels": {"Title": "Pollen", "X": "Time [d]", "Y": "Amount [g]"},
-            "Bounds": {"X": 610, "Y": 470, "W": 600, "H": 400}
+            "Bounds": {"X": 610, "Y": 370, "W": 600, "H": 300}
+        }
+    ],
+    "LinePlots": [
+        {
+            "Observer": "obs.ForagingStats",
+            "Params": {"Relative": true},
+            "X": "Round",
+            "XLim": [0, 40],
+            "YLim": [0, 1.05],
+            "Labels": {"Title": "ForagingStats", "X": "Round", "Y": "Count"},
+            "Bounds": {"X": 1, "Y": 700, "W": 1200, "H": 300}
         }
     ]
 }

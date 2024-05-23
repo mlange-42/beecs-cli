@@ -49,10 +49,10 @@ github.com/mlange-42/arche v0.13.0 h1:ef0fu9qC2KIr8wIlVs+CgeQ5CSUJ8A1Hut6nXYdf+x
 github.com/mlange-42/arche v0.13.0/go.mod h1:bFktKnvGDj2kP01xar79z0hKwGHdnoaEZR8HWmJkIyU=
 github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180 h1:R1u8Xj5uG6jwCv0r3eIbhd8SHs9uLbA5vJ0sjxjCWZY=
 github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180/go.mod h1:5Pzd3iAgdGNTiMgFJxHdc6a7qoaQPBK9xmyhrKTMmV8=
-github.com/mlange-42/arche-pixel v0.9.0 h1:UhHXUjSpvbKeJgRiWQWGYPrNbnu+007U9HaBBgW7uOY=
-github.com/mlange-42/arche-pixel v0.9.0/go.mod h1:UWr4ZfpvreTRWr76dqi30VCax19kEbiSDSNrbZTbMDQ=
-github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69 h1:v4w91bVmHwRJdhbsiWUg5UhKquZJdYNoJI2rTpy5VlI=
-github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69/go.mod h1:dD3tTgxU6yczpKhErCY2BA65FdS3Ye0pwK6P/JE4JzQ=
+github.com/mlange-42/arche-pixel v0.9.1-0.20240523102310-958292ff764d h1:RWHbjBrDtb/YJVdOc1/jd5hLPUBfLqxf/AXuKqD1gbI=
+github.com/mlange-42/arche-pixel v0.9.1-0.20240523102310-958292ff764d/go.mod h1:UWr4ZfpvreTRWr76dqi30VCax19kEbiSDSNrbZTbMDQ=
+github.com/mlange-42/beecs v0.1.1-0.20240523095106-c543d24d7f9e h1:IG6UGhcUyptr+R3U+T2UbN0WOqLM1A2CzWddM5pt2JI=
+github.com/mlange-42/beecs v0.1.1-0.20240523095106-c543d24d7f9e/go.mod h1:dD3tTgxU6yczpKhErCY2BA65FdS3Ye0pwK6P/JE4JzQ=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

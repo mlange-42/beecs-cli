@@ -30,6 +30,17 @@
             "Bounds": {"X": 1, "Y": 470, "W": 600, "H": 400}
         }
     ],
+    "LinePlots": [
+        {
+            "Observer": "obs.ForagingStats",
+            "Params": {"Relative": true},
+            "X": "Round",
+            "XLim": [0, 40],
+            "YLim": [0, 1.05],
+            "Labels": {"Title": "ForagingStats", "X": "Round", "Y": "Count"},
+            "Bounds": {"X": 610, "Y": 30, "W": 600, "H": 400}
+        }
+    ],
     "Views": [
         {"Drawer": "plot.Monitor"},
         {"Drawer": "plot.Resources"},

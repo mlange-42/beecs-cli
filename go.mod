@@ -6,8 +6,8 @@ require (
 	github.com/gopxl/pixel/v2 v2.1.0
 	github.com/mlange-42/arche v0.13.0
 	github.com/mlange-42/arche-model v0.8.2-0.20240521193509-06db52d11180
-	github.com/mlange-42/arche-pixel v0.9.0
-	github.com/mlange-42/beecs v0.1.1-0.20240522213354-10bf02ffdd69
+	github.com/mlange-42/arche-pixel v0.9.1-0.20240523102310-958292ff764d
+	github.com/mlange-42/beecs v0.1.1-0.20240523095106-c543d24d7f9e
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
