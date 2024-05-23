@@ -58,6 +58,9 @@ func RunParallel(
 	for _, t := range observers.Tables {
 		files = append(files, path.Join(dir, t.File))
 	}
+	for _, t := range observers.StepTables {
+		files = append(files, path.Join(dir, t.File))
+	}
 	writer, err := util.NewCsvWriter(files, observers.CsvSeparator)
 	if err != nil {
 		return err

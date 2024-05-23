@@ -7,6 +7,12 @@
             "File": "out/WorkerCohorts.csv"
         }
     ],
+    "StepTables": [
+        {
+            "Observer": "obs.ForagingStats",
+            "File": "out/ForagingStats.csv"
+        }
+    ],
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",

@@ -58,8 +58,8 @@ func runModel(
 
 	result := util.Tables{
 		Index:   idx,
-		Headers: make([][]string, len(obs.Tables)+1),
-		Data:    make([][][]float64, len(obs.Tables)+1),
+		Headers: make([][]string, len(obs.Tables)+len(obs.StepTables)+1),
+		Data:    make([][][]float64, len(obs.Tables)+len(obs.StepTables)+1),
 	}
 
 	now := time.Now().UnixMilli()
@@ -87,6 +87,28 @@ func runModel(
 			copy(data[2:], row)
 
 			result.Data[i+1] = append(result.Data[i+1], data)
+		}
+		m.AddSystem(t)
+	}
+
+	offset := len(obs.Tables)
+	for i, t := range obs.StepTables {
+		t.HeaderCallback = func(header []string) {
+			h := make([]string, len(header)+2)
+			h[0] = "Run"
+			h[1] = "Ticks"
+			copy(h[2:], header)
+			result.Headers[offset+i+1] = h
+		}
+		t.Callback = func(step int, table [][]float64) {
+			for _, row := range table {
+				data := make([]float64, len(row)+2)
+				data[0] = float64(idx)
+				data[1] = float64(step)
+				copy(data[2:], row)
+
+				result.Data[offset+i+1] = append(result.Data[offset+i+1], data)
+			}
 		}
 		m.AddSystem(t)
 	}
