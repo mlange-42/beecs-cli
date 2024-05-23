@@ -11,7 +11,6 @@ import (
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
 	"github.com/mlange-42/beecs-cli/registry"
-	"github.com/mlange-42/beecs-cli/view"
 )
 
 type entry struct {
@@ -43,15 +42,21 @@ type TableDef struct {
 	Final          bool
 }
 
+type ViewDef struct {
+	Drawer       string
+	Params       entry
+	Title        string
+	Bounds       window.Bounds
+	DrawInterval int
+	MaxRows      int
+}
+
 type ObserversDef struct {
 	Parameters      string
 	CsvSeparator    string
 	TimeSeriesPlots []TimeSeriesPlotDef
 	Tables          []TableDef
-	Monitor         bool // Show the ECS monitor.
-	Resources       bool // Show the resources inspector.
-	Systems         bool // Show the systems inspector.
-	ForagingView    bool // Show the flower patch foraging view.
+	Views           []ViewDef
 }
 
 func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
@@ -93,31 +98,33 @@ func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 			tsPlots = append(tsPlots, win)
 		}
 
-		if obs.Monitor {
-			win := (&window.Window{}).
-				With(&plot.Monitor{}).
-				With(&plot.Controls{})
-			tsPlots = append(tsPlots, win)
-		}
+		for _, p := range obs.Views {
+			tp, ok := registry.GetDrawer(p.Drawer)
+			if !ok {
+				return Observers{}, fmt.Errorf("view type '%s' is not registered", p.Drawer)
+			}
+			drawerVal := reflect.New(tp).Interface()
+			if len(p.Params.Bytes) == 0 {
+				p.Params.Bytes = []byte("{}")
+			}
 
-		if obs.Resources {
-			win := (&window.Window{}).
-				With(&plot.Resources{}).
-				With(&plot.Controls{})
-			tsPlots = append(tsPlots, win)
-		}
+			decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+			decoder.DisallowUnknownFields()
+			if err := decoder.Decode(&drawerVal); err != nil {
+				return Observers{}, err
+			}
+			drawerCast, ok := drawerVal.(window.Drawer)
+			if !ok {
+				return Observers{}, fmt.Errorf("type '%s' is not a Drawer", tp.String())
+			}
+			win := &window.Window{
+				Title:        p.Title,
+				Bounds:       p.Bounds,
+				DrawInterval: p.DrawInterval,
+			}
+			win = win.With(drawerCast)
+			win = win.With(&plot.Controls{})
 
-		if obs.Systems {
-			win := (&window.Window{}).
-				With(&plot.Systems{}).
-				With(&plot.Controls{})
-			tsPlots = append(tsPlots, win)
-		}
-
-		if obs.ForagingView {
-			win := (&window.Window{}).
-				With(&view.Foraging{}).
-				With(&plot.Controls{})
 			tsPlots = append(tsPlots, win)
 		}
 	}

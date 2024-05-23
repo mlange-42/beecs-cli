@@ -1,5 +1,7 @@
 {
-    "ForagingView": true,
+    "Views": [
+        {"Drawer": "view.Foraging"}
+    ],
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
