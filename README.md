@@ -18,42 +18,44 @@ Command line interface for the [beecs](https://github.com/mlange-42/beecs) honey
 
 Pre-compiled binaries for Linux, Windows and MacOS are available in the [Releases](https://github.com/mlange-42/beecs-cli/releases).
 
-To install the latest development version using [Go](https://go.dev), run:
-
-```
-go install github.com/mlange-42/beecs-cli@main
-```
+> To install the latest **development version** using [Go](https://go.dev), run:
+> 
+> ```
+> go install github.com/mlange-42/beecs-cli@main
+> ```
+> 
+> Note: Use `beecs-cli` instead of `beecs` in the examples below in this case.
 
 ## CLI usage
 
 Get CLI help like this:
 
 ```
-beecs-cli -h
+beecs -h
 ```
 
 A single simulation with live plots, at 30 ticks per second:
 
 ```
-beecs-cli -d _examples/base --observers --tps 30
+beecs -d _examples/base --observers --tps 30
 ```
 
 Run the full base example with parameter variation and 10 runs per parameter set:
 
 ```
-beecs-cli -d _examples/base --observers --experiment -r 10
+beecs -d _examples/base --observers --experiment -r 10
 ```
 
 Print all default parameters in the tool's input format:
 
 ```
-beecs-cli parameters
+beecs parameters
 ```
 
 Create input file templates in the current directory:
 
 ```
-beecs-cli init
+beecs init
 ```
 
 ## Library usage

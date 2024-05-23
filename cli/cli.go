@@ -33,7 +33,7 @@ const (
 func Run() {
 	if err := rootCommand().Execute(); err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
-		fmt.Print("\nRun `beecs-cli -h` for help!\n\n")
+		fmt.Print("\nRun `beecs -h` for help!\n\n")
 		os.Exit(1)
 	}
 }
@@ -55,7 +55,7 @@ func rootCommand() *cobra.Command {
 
 	var root cobra.Command
 	root = cobra.Command{
-		Use:           "beecs-cli",
+		Use:           "beecs",
 		Short:         "beecs-cli provides a command line interface for the beecs model.",
 		Long:          `beecs-cli provides a command line interface for the beecs model.`,
 		SilenceUsage:  true,

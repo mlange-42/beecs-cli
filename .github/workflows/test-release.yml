@@ -27,10 +27,10 @@ jobs:
           sudo apt-get install -y libgl1-mesa-dev xorg-dev
           go get ./...
       - name: Build
-        run: GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+        run: GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" -o beecs .
       - name: Compress binaries
         run: |
-          tar -czf beecs-cli.tar.gz beecs-cli
+          tar -czf beecs-cli.tar.gz beecs
         shell: bash
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
@@ -56,10 +56,10 @@ jobs:
           sudo apt-get install -y gcc-mingw-w64
           go get ./...
       - name: Build
-        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags="-s -w" .
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -ldflags="-s -w" -o beecs.exe .
       - name: Compress binaries
         run: |
-          zip -r beecs-cli.zip beecs-cli.exe
+          zip -r beecs-cli.zip beecs.exe
         shell: bash
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
@@ -80,10 +80,10 @@ jobs:
         with:
           go-version: '1.22.x'
       - name: Build
-        run: GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+        run: GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build -ldflags="-s -w" -o beecs .
       - name: Compress binaries
         run: |
-          zip -r beecs-cli.zip beecs-cli
+          zip -r beecs-cli.zip beecs
         shell: bash
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
@@ -104,10 +104,10 @@ jobs:
         with:
           go-version: '1.22.x'
       - name: Build
-        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" .
+        run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" -o beecs .
       - name: Compress binaries
         run: |
-          zip -r beecs-cli.zip beecs-cli
+          zip -r beecs-cli.zip beecs
         shell: bash
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
