@@ -25,14 +25,20 @@ func RunParallel(
 	overwrite []experiment.ParameterValue,
 	dir string,
 	threads int, tps float64, rng *rand.Rand,
+	indices []int,
 ) error {
-	totalRuns := exp.TotalRuns()
+	maxRuns := exp.TotalRuns()
+	totalRuns := maxRuns
+	if len(indices) > 0 {
+		totalRuns = len(indices)
+	}
+
 	// Channel for sending jobs to workers (buffered!).
 	jobs := make(chan job, totalRuns)
 	// Channel for retrieving results / done messages (buffered!).
 	results := make(chan util.Tables, totalRuns)
 
-	seeds := make([]int32, totalRuns)
+	seeds := make([]int32, maxRuns)
 	for i := range seeds {
 		seeds[i] = rng.Int31()
 	}
@@ -43,8 +49,12 @@ func RunParallel(
 	}
 
 	// Send the jobs. Does not block due to buffered channel.
-	for j := 0; j < totalRuns; j++ {
-		jobs <- job{Index: j, Seed: seeds[j]}
+	err := iterate(maxRuns, indices, func(idx int) error {
+		jobs <- job{Index: idx, Seed: seeds[idx]}
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 	close(jobs)
 
@@ -67,13 +77,17 @@ func RunParallel(
 	}
 
 	// Collect done messages.
-	for j := 0; j < totalRuns; j++ {
+	err = iterate(maxRuns, indices, func(idx int) error {
 		result := <-results
 		err = writer.Write(&result)
 		if err != nil {
 			return err
 		}
 		fmt.Printf("Run %5d/%d\n", result.Index, totalRuns)
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 
 	return writer.Close()
