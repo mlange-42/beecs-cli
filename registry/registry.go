@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/mlange-42/arche-pixel/plot"
+	"github.com/mlange-42/beecs-cli/view"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/sys"
 )
 
 var observerRegistry = map[string]reflect.Type{}
+var drawersRegistry = map[string]reflect.Type{}
 var resourcesRegistry = map[string]reflect.Type{}
 var systemsRegistry = map[string]reflect.Type{}
 
@@ -20,6 +23,11 @@ func init() {
 	RegisterObserver[obs.PatchPollen]()
 	RegisterObserver[obs.NectarVisits]()
 	RegisterObserver[obs.PollenVisits]()
+
+	RegisterDrawer[plot.Monitor]()
+	RegisterDrawer[plot.Resources]()
+	RegisterDrawer[plot.Systems]()
+	RegisterDrawer[view.Foraging]()
 
 	//RegisterResource[...]()
 
@@ -56,6 +64,14 @@ func RegisterObserver[T any]() {
 	observerRegistry[tp.String()] = tp
 }
 
+func RegisterDrawer[T any]() {
+	tp := reflect.TypeOf((*T)(nil)).Elem()
+	if _, ok := drawersRegistry[tp.String()]; ok {
+		panic(fmt.Sprintf("there is already a drawer with type name '%s' registered", tp.String()))
+	}
+	drawersRegistry[tp.String()] = tp
+}
+
 func RegisterResource[T any]() {
 	tp := reflect.TypeOf((*T)(nil)).Elem()
 	if _, ok := resourcesRegistry[tp.String()]; ok {
@@ -74,6 +90,11 @@ func RegisterSystem[T any]() {
 
 func GetObserver(name string) (reflect.Type, bool) {
 	t, ok := observerRegistry[name]
+	return t, ok
+}
+
+func GetDrawer(name string) (reflect.Type, bool) {
+	t, ok := drawersRegistry[name]
 	return t, ok
 }
 

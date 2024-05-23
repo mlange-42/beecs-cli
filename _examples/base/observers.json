@@ -1,9 +1,6 @@
 {
     "CsvSeparator": ";",
     "Parameters": "out/Parameters.csv",
-    "Monitor": true,
-    "Resources": true,
-    "Systems": true,
     "Tables": [
         {
             "Observer": "obs.WorkerCohorts",
@@ -32,5 +29,11 @@
             "Labels": {"Title": "Stores", "X": "Time [d]", "Y": "Amount [kg]"},
             "Bounds": {"X": 1, "Y": 470, "W": 600, "H": 400}
         }
+    ],
+    "Views": [
+        {"Drawer": "plot.Monitor"},
+        {"Drawer": "plot.Resources"},
+        {"Drawer": "plot.Systems"},
+        {"Drawer": "view.Foraging"}
     ]
 }
