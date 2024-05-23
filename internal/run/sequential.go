@@ -19,6 +19,7 @@ func RunSequential(
 	overwrite []experiment.ParameterValue,
 	dir string,
 	tps float64, rng *rand.Rand,
+	indices []int,
 ) error {
 	m := amod.New()
 	m.FPS = 30
@@ -43,8 +44,8 @@ func RunSequential(
 	}
 
 	totalRuns := exp.TotalRuns()
-	for j := 0; j < totalRuns; j++ {
-		result, err := runModel(p, exp, observers, systems, overwrite, m, j, rng.Int31(), totalRuns > 1)
+	err = iterate(totalRuns, indices, func(idx int) error {
+		result, err := runModel(p, exp, observers, systems, overwrite, m, idx, rng.Int31(), totalRuns > 1)
 		if err != nil {
 			return err
 		}
@@ -52,8 +53,29 @@ func RunSequential(
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Run %5d/%d\n", j, totalRuns)
+		fmt.Printf("Run %5d/%d\n", idx, totalRuns)
+		return nil
+	})
+	if err != nil {
+		return err
 	}
 
 	return writer.Close()
+}
+
+func iterate(totalRuns int, indices []int, fn func(idx int) error) error {
+	if len(indices) == 0 {
+		for j := 0; j < totalRuns; j++ {
+			if err := fn(j); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	for _, j := range indices {
+		if err := fn(j); err != nil {
+			return err
+		}
+	}
+	return nil
 }

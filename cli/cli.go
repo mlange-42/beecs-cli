@@ -51,6 +51,7 @@ func rootCommand() *cobra.Command {
 	var runs int
 	var overwrite []string
 	var seed int
+	var indicesStr string
 
 	var root cobra.Command
 	root = cobra.Command{
@@ -145,13 +146,18 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
-			if exp.TotalRuns() <= 1 {
+			indices, err := util.ParseIndices(indicesStr)
+			if err != nil {
+				return err
+			}
+
+			if exp.TotalRuns() <= 1 || len(indices) == 0 {
 				threads = 1
 			}
 			if threads <= 1 {
-				return run.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng)
+				return run.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng, indices)
 			} else {
-				return run.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng)
+				return run.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng, indices)
 			}
 		},
 	}
@@ -180,6 +186,7 @@ func rootCommand() *cobra.Command {
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
+	root.Flags().StringVarP(&indicesStr, "index", "i", "", "Only run the given list or range of indices. Default: all")
 
 	root.Flags().SortFlags = false
 
