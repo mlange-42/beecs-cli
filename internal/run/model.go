@@ -46,8 +46,10 @@ func runModel(
 			return util.Tables{}, err
 		}
 	}
-	if rSeed >= 0 {
-		ecs.GetResource[params.RandomSeed](&m.World).Seed = int(rSeed)
+
+	seedRes := ecs.GetResource[params.RandomSeed](&m.World)
+	if rSeed >= 0 && seedRes.Seed <= 0 {
+		seedRes.Seed = int(rSeed)
 		m.Seed(uint64(rSeed))
 	}
 
