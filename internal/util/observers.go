@@ -23,8 +23,9 @@ func (e *entry) UnmarshalJSON(jsonData []byte) error {
 }
 
 type Observers struct {
-	Windows []*window.Window
-	Tables  []*reporter.Callback
+	Windows    []*window.Window
+	Tables     []*reporter.RowCallback
+	StepTables []*reporter.TableCallback
 }
 
 type TimeSeriesPlotDef struct {
@@ -60,6 +61,14 @@ type TableDef struct {
 	Final          bool
 }
 
+type StepTableDef struct {
+	File           string
+	Observer       string
+	Params         entry
+	UpdateInterval int
+	Final          bool
+}
+
 type ViewDef struct {
 	Drawer       string
 	Params       entry
@@ -76,6 +85,7 @@ type ObserversDef struct {
 	LinePlots       []LinePlotDef       // Live line plots.
 	Views           []ViewDef           // Live views.
 	Tables          []TableDef          // CSV output with one row per update.
+	StepTables      []StepTableDef      // CSV output with a full table per update.
 }
 
 func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
@@ -105,9 +115,15 @@ func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 		return Observers{}, err
 	}
 
+	stepTables, err := createStepTables(obs.StepTables)
+	if err != nil {
+		return Observers{}, err
+	}
+
 	return Observers{
-		Windows: windows,
-		Tables:  tables,
+		Windows:    windows,
+		Tables:     tables,
+		StepTables: stepTables,
 	}, nil
 }
 
@@ -228,8 +244,8 @@ func createViews(views []ViewDef) ([]*window.Window, error) {
 	return windows, nil
 }
 
-func createTables(tabs []TableDef) ([]*reporter.Callback, error) {
-	tables := []*reporter.Callback{}
+func createTables(tabs []TableDef) ([]*reporter.RowCallback, error) {
+	tables := []*reporter.RowCallback{}
 	for _, t := range tabs {
 		tp, ok := registry.GetObserver(t.Observer)
 		if !ok {
@@ -248,11 +264,44 @@ func createTables(tabs []TableDef) ([]*reporter.Callback, error) {
 		if !ok {
 			return nil, fmt.Errorf("type '%s' is not a Row observer", tp.String())
 		}
-		rep := &reporter.Callback{
+		rep := &reporter.RowCallback{
 			Observer:       obsCast,
 			UpdateInterval: t.UpdateInterval,
 			HeaderCallback: func(header []string) {},
 			Callback:       func(step int, row []float64) {},
+			Final:          t.Final,
+		}
+		tables = append(tables, rep)
+	}
+
+	return tables, nil
+}
+
+func createStepTables(tabs []StepTableDef) ([]*reporter.TableCallback, error) {
+	tables := []*reporter.TableCallback{}
+	for _, t := range tabs {
+		tp, ok := registry.GetObserver(t.Observer)
+		if !ok {
+			return nil, fmt.Errorf("observer type '%s' is not registered", t.Observer)
+		}
+		observerVal := reflect.New(tp).Interface()
+		if len(t.Params.Bytes) == 0 {
+			t.Params.Bytes = []byte("{}")
+		}
+		decoder := json.NewDecoder(bytes.NewReader(t.Params.Bytes))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&observerVal); err != nil {
+			return nil, err
+		}
+		obsCast, ok := observerVal.(observer.Table)
+		if !ok {
+			return nil, fmt.Errorf("type '%s' is not a Table observer", tp.String())
+		}
+		rep := &reporter.TableCallback{
+			Observer:       obsCast,
+			UpdateInterval: t.UpdateInterval,
+			HeaderCallback: func(header []string) {},
+			Callback:       func(step int, row [][]float64) {},
 			Final:          t.Final,
 		}
 		tables = append(tables, rep)
