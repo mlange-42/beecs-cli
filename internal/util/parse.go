@@ -11,32 +11,35 @@ func ParseIndices(str string) ([]int, error) {
 		return nil, nil
 	}
 
-	if strings.Contains(str, "-") {
-		parts := strings.Split(str, "-")
-		if len(parts) != 2 {
+	indices := []int{}
+	parts := strings.Split(str, ",")
+	for _, p := range parts {
+		if len(p) == 0 {
 			return nil, fmt.Errorf("invalid syntax for indices in '%s'", str)
 		}
-		lower, err := strconv.Atoi(parts[0])
+		subParts := strings.Split(p, "-")
+		if len(subParts) > 2 || len(subParts) == 0 {
+			return nil, fmt.Errorf("invalid syntax for indices in '%s'", str)
+		}
+		if len(subParts) == 1 {
+			value, err := strconv.Atoi(subParts[0])
+			if err != nil {
+				return nil, fmt.Errorf("error parsing numbers for indices in '%s'", str)
+			}
+			indices = append(indices, value)
+			continue
+		}
+		lower, err := strconv.Atoi(subParts[0])
 		if err != nil {
 			return nil, fmt.Errorf("error parsing numbers for indices in '%s'", str)
 		}
-		upper, err := strconv.Atoi(parts[1])
+		upper, err := strconv.Atoi(subParts[1])
 		if err != nil {
 			return nil, fmt.Errorf("error parsing numbers for indices in '%s'", str)
 		}
-		indices := make([]int, upper-lower+1)
-		for i := range indices {
-			indices[i] = lower + i
-		}
-		return indices, nil
-	}
-	parts := strings.Split(str, ",")
-	indices := make([]int, len(parts))
-	var err error
-	for i, p := range parts {
-		indices[i], err = strconv.Atoi(p)
-		if err != nil {
-			return nil, fmt.Errorf("error parsing numbers for indices in '%s'", str)
+		values := upper - lower + 1
+		for i := 0; i < values; i++ {
+			indices = append(indices, lower+i)
 		}
 	}
 	return indices, nil

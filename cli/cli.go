@@ -186,7 +186,7 @@ func rootCommand() *cobra.Command {
 	root.Flags().IntVarP(&runs, "runs", "r", 1, "Runs per parameter set")
 	root.Flags().IntVarP(&threads, "threads", "t", runtime.NumCPU(), "Number of threads")
 	root.Flags().Float64VarP(&speed, "tps", "", 0, "Speed limit in ticks per second. Default: 0 (unlimited)")
-	root.Flags().StringVarP(&indicesStr, "index", "i", "", "Only run the given list or range of indices. Default: all")
+	root.Flags().StringVarP(&indicesStr, "index", "i", "", "Only run the given list or range of indices.\nExample: '2-5,8,12'. Default: all")
 
 	root.Flags().SortFlags = false
 
