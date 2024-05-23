@@ -48,6 +48,7 @@ type LinePlotDef struct {
 	Y            []string
 	Bounds       window.Bounds
 	DrawInterval int
+	XLim         [2]float64
 	YLim         [2]float64
 }
 
@@ -69,17 +70,24 @@ type ViewDef struct {
 }
 
 type ObserversDef struct {
-	Parameters      string
-	CsvSeparator    string
-	TimeSeriesPlots []TimeSeriesPlotDef
-	Tables          []TableDef
-	Views           []ViewDef
+	Parameters      string              // Output file for parameters.
+	CsvSeparator    string              // Column separator for all CSV output.
+	TimeSeriesPlots []TimeSeriesPlotDef // Live time series plots.
+	LinePlots       []LinePlotDef       // Live line plots.
+	Views           []ViewDef           // Live views.
+	Tables          []TableDef          // CSV output with one row per update.
 }
 
 func (obs *ObserversDef) CreateObservers(withUI bool) (Observers, error) {
 	windows := []*window.Window{}
 	if withUI {
 		win, err := createTimeSeriesPlots(obs.TimeSeriesPlots)
+		if err != nil {
+			return Observers{}, err
+		}
+		windows = append(windows, win...)
+
+		win, err = createLinePlots(obs.LinePlots)
 		if err != nil {
 			return Observers{}, err
 		}
@@ -135,6 +143,48 @@ func createTimeSeriesPlots(plots []TimeSeriesPlotDef) ([]*window.Window, error) 
 			UpdateInterval: p.UpdateInterval,
 			Labels:         p.Labels,
 			MaxRows:        p.MaxRows,
+		})
+		win = win.With(&plot.Controls{})
+
+		windows[i] = win
+	}
+
+	return windows, nil
+}
+
+func createLinePlots(plots []LinePlotDef) ([]*window.Window, error) {
+	windows := make([]*window.Window, len(plots))
+	for i, p := range plots {
+		tp, ok := registry.GetObserver(p.Observer)
+		if !ok {
+			return nil, fmt.Errorf("observer type '%s' is not registered", p.Observer)
+		}
+		observerVal := reflect.New(tp).Interface()
+		if len(p.Params.Bytes) == 0 {
+			p.Params.Bytes = []byte("{}")
+		}
+
+		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&observerVal); err != nil {
+			return nil, err
+		}
+		obsCast, ok := observerVal.(observer.Table)
+		if !ok {
+			return nil, fmt.Errorf("type '%s' is not a Table observer", tp.String())
+		}
+		win := &window.Window{
+			Title:        p.Title,
+			Bounds:       p.Bounds,
+			DrawInterval: p.DrawInterval,
+		}
+		win = win.With(&plot.Lines{
+			Observer: obsCast,
+			X:        p.X,
+			Y:        p.Y,
+			Labels:   p.Labels,
+			XLim:     p.XLim,
+			YLim:     p.YLim,
 		})
 		win = win.With(&plot.Controls{})
 
