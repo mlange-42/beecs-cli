@@ -151,7 +151,7 @@ func rootCommand() *cobra.Command {
 				return err
 			}
 
-			if exp.TotalRuns() <= 1 || len(indices) == 0 {
+			if exp.TotalRuns() <= 1 || len(indices) == 1 {
 				threads = 1
 			}
 			if threads <= 1 {

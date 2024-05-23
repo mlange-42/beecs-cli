@@ -43,9 +43,13 @@ func RunSequential(
 		return err
 	}
 
-	totalRuns := exp.TotalRuns()
-	err = iterate(totalRuns, indices, func(idx int) error {
-		result, err := runModel(p, exp, observers, systems, overwrite, m, idx, rng.Int31(), totalRuns > 1)
+	maxRuns := exp.TotalRuns()
+	actualRuns := maxRuns
+	if len(indices) > 0 {
+		actualRuns = len(indices)
+	}
+	err = iterate(maxRuns, indices, func(idx int) error {
+		result, err := runModel(p, exp, observers, systems, overwrite, m, idx, rng.Int31(), actualRuns > 1)
 		if err != nil {
 			return err
 		}
@@ -53,7 +57,7 @@ func RunSequential(
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Run %5d/%d\n", idx, totalRuns)
+		fmt.Printf("Run %5d/%d\n", idx, maxRuns)
 		return nil
 	})
 	if err != nil {
