@@ -13,11 +13,10 @@ import (
 	"time"
 
 	"github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/beecs-cli/internal/params"
 	"github.com/mlange-42/beecs-cli/internal/run"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
-	baseparams "github.com/mlange-42/beecs/params"
+	"github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"golang.org/x/exp/rand"
@@ -81,7 +80,7 @@ func rootCommand() *cobra.Command {
 			}
 
 			p := params.CustomParams{
-				Parameters: baseparams.Default(),
+				Parameters: params.Default(),
 			}
 			for _, f := range paramFiles {
 				err := p.FromJSON(path.Join(dir, f))
@@ -211,7 +210,7 @@ func parametersCommand() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			p := params.CustomParams{
-				Parameters: baseparams.Default(),
+				Parameters: params.Default(),
 				Custom:     map[reflect.Type]any{},
 			}
 			for _, f := range paramFiles {
@@ -272,7 +271,7 @@ func initCommand() *cobra.Command {
 			}
 
 			p := params.CustomParams{
-				Parameters: baseparams.Default(),
+				Parameters: params.Default(),
 				Custom:     map[reflect.Type]any{},
 			}
 			js, err := p.ToJSON()
