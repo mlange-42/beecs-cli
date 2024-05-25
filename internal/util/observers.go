@@ -32,7 +32,7 @@ type TimeSeriesPlotDef struct {
 	Labels         plot.Labels
 	Title          string
 	Observer       string
-	Params         entry
+	ObserverConfig entry
 	Columns        []string
 	Bounds         window.Bounds
 	DrawInterval   int
@@ -135,11 +135,11 @@ func createTimeSeriesPlots(plots []TimeSeriesPlotDef) ([]*window.Window, error) 
 			return nil, fmt.Errorf("observer type '%s' is not registered", p.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if len(p.Params.Bytes) == 0 {
-			p.Params.Bytes = []byte("{}")
+		if len(p.ObserverConfig.Bytes) == 0 {
+			p.ObserverConfig.Bytes = []byte("{}")
 		}
 
-		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+		decoder := json.NewDecoder(bytes.NewReader(p.ObserverConfig.Bytes))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&observerVal); err != nil {
 			return nil, err

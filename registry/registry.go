@@ -24,6 +24,7 @@ func init() {
 	RegisterObserver[obs.NectarVisits]()
 	RegisterObserver[obs.PollenVisits]()
 
+	RegisterObserver[obs.AgeStructure]()
 	RegisterObserver[obs.ForagingStats]()
 
 	RegisterDrawer[plot.Monitor]()
