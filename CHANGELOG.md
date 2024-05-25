@@ -24,6 +24,7 @@
 
 - Show plots only when a single run is performed (#19)
 - Restructured code for use as a library/module (#26)
+- Renames JSON property `Params` to `ObserverConfig` (#49)
 
 ## [[v0.1.0]](https://github.com/mlange-42/beecs-cli/tree/v0.1.0)
 

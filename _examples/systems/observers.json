@@ -10,7 +10,7 @@
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
-            "Params": {
+            "ObserverConfig": {
                 "Cumulative": true
             },
             "DrawInterval": 5,
@@ -20,7 +20,7 @@
         },
         {
             "Observer": "obs.Stores",
-            "Params": {
+            "ObserverConfig": {
                 "PollenFactor": 20
             },
             "Columns": ["Honey", "Pollen x20"],
