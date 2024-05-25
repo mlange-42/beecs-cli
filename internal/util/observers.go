@@ -41,22 +41,22 @@ type TimeSeriesPlotDef struct {
 }
 
 type LinePlotDef struct {
-	Labels       plot.Labels
-	Title        string
-	Observer     string
-	Params       entry
-	X            string
-	Y            []string
-	Bounds       window.Bounds
-	DrawInterval int
-	XLim         [2]float64
-	YLim         [2]float64
+	Labels         plot.Labels
+	Title          string
+	Observer       string
+	ObserverConfig entry
+	X              string
+	Y              []string
+	Bounds         window.Bounds
+	DrawInterval   int
+	XLim           [2]float64
+	YLim           [2]float64
 }
 
 type TableDef struct {
 	File           string
 	Observer       string
-	Params         entry
+	ObserverConfig entry
 	UpdateInterval int
 	Final          bool
 }
@@ -64,14 +64,14 @@ type TableDef struct {
 type StepTableDef struct {
 	File           string
 	Observer       string
-	Params         entry
+	ObserverConfig entry
 	UpdateInterval int
 	Final          bool
 }
 
 type ViewDef struct {
 	Drawer       string
-	Params       entry
+	DrawerConfig entry
 	Title        string
 	Bounds       window.Bounds
 	DrawInterval int
@@ -176,11 +176,11 @@ func createLinePlots(plots []LinePlotDef) ([]*window.Window, error) {
 			return nil, fmt.Errorf("observer type '%s' is not registered", p.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if len(p.Params.Bytes) == 0 {
-			p.Params.Bytes = []byte("{}")
+		if len(p.ObserverConfig.Bytes) == 0 {
+			p.ObserverConfig.Bytes = []byte("{}")
 		}
 
-		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+		decoder := json.NewDecoder(bytes.NewReader(p.ObserverConfig.Bytes))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&observerVal); err != nil {
 			return nil, err
@@ -218,11 +218,11 @@ func createViews(views []ViewDef) ([]*window.Window, error) {
 			return nil, fmt.Errorf("view type '%s' is not registered", p.Drawer)
 		}
 		drawerVal := reflect.New(tp).Interface()
-		if len(p.Params.Bytes) == 0 {
-			p.Params.Bytes = []byte("{}")
+		if len(p.DrawerConfig.Bytes) == 0 {
+			p.DrawerConfig.Bytes = []byte("{}")
 		}
 
-		decoder := json.NewDecoder(bytes.NewReader(p.Params.Bytes))
+		decoder := json.NewDecoder(bytes.NewReader(p.DrawerConfig.Bytes))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&drawerVal); err != nil {
 			return nil, err
@@ -252,10 +252,10 @@ func createTables(tabs []TableDef) ([]*reporter.RowCallback, error) {
 			return nil, fmt.Errorf("observer type '%s' is not registered", t.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if len(t.Params.Bytes) == 0 {
-			t.Params.Bytes = []byte("{}")
+		if len(t.ObserverConfig.Bytes) == 0 {
+			t.ObserverConfig.Bytes = []byte("{}")
 		}
-		decoder := json.NewDecoder(bytes.NewReader(t.Params.Bytes))
+		decoder := json.NewDecoder(bytes.NewReader(t.ObserverConfig.Bytes))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&observerVal); err != nil {
 			return nil, err
@@ -285,10 +285,10 @@ func createStepTables(tabs []StepTableDef) ([]*reporter.TableCallback, error) {
 			return nil, fmt.Errorf("observer type '%s' is not registered", t.Observer)
 		}
 		observerVal := reflect.New(tp).Interface()
-		if len(t.Params.Bytes) == 0 {
-			t.Params.Bytes = []byte("{}")
+		if len(t.ObserverConfig.Bytes) == 0 {
+			t.ObserverConfig.Bytes = []byte("{}")
 		}
-		decoder := json.NewDecoder(bytes.NewReader(t.Params.Bytes))
+		decoder := json.NewDecoder(bytes.NewReader(t.ObserverConfig.Bytes))
 		decoder.DisallowUnknownFields()
 		if err := decoder.Decode(&observerVal); err != nil {
 			return nil, err

@@ -8,7 +8,7 @@
     "TimeSeriesPlots": [
         {
             "Observer": "obs.WorkerCohorts",
-            "Params": {
+            "ObserverConfig": {
                 "Cumulative": true
             },
             "DrawInterval": 5,
@@ -18,7 +18,7 @@
         },
         {
             "Observer": "obs.Stores",
-            "Params": {
+            "ObserverConfig": {
                 "PollenFactor": 20
             },
             "Columns": ["Honey", "Pollen x20"],
@@ -45,7 +45,7 @@
     "LinePlots": [
         {
             "Observer": "obs.ForagingStats",
-            "Params": {"Relative": true},
+            "ObserverConfig": {"Relative": true},
             "X": "Round",
             "XLim": [0, 40],
             "YLim": [0, 1.05],
