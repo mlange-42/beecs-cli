@@ -14,6 +14,8 @@ Command line interface for the [beecs](https://github.com/mlange-42/beecs) honey
 * Various real-time visualizations for debugging and model exploration.
 * All this, even for derived models with altered sub-models, state variables etc.
 
+For a graphical user interface for the beecs model, see [beecs-ui](https://github.com/mlange-42/beecs-ui).
+
 ## Installation
 
 Pre-compiled binaries for Linux, Windows and MacOS are available in the [Releases](https://github.com/mlange-42/beecs-cli/releases).
