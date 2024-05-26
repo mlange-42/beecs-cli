@@ -5,9 +5,9 @@ go 1.22.0
 require (
 	github.com/gopxl/pixel/v2 v2.1.0
 	github.com/mlange-42/arche v0.13.0
-	github.com/mlange-42/arche-model v0.8.2-0.20240523143440-11595cc41e11
+	github.com/mlange-42/arche-model v0.9.0
 	github.com/mlange-42/arche-pixel v0.9.1-0.20240523102310-958292ff764d
-	github.com/mlange-42/beecs v0.1.1-0.20240525234846-9103ab3c201b
+	github.com/mlange-42/beecs v0.1.1-0.20240526171228-7a65685f7d86
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa

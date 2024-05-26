@@ -88,14 +88,7 @@ func rootCommand() *cobra.Command {
 					return err
 				}
 			}
-			if p.Parameters.InitialPatches.File != "" {
-				p.Parameters.InitialPatches.File = path.Join(dir, p.Parameters.InitialPatches.File)
-			}
-			if !p.Parameters.ForagingPeriod.Builtin {
-				for i, f := range p.Parameters.ForagingPeriod.Files {
-					p.Parameters.ForagingPeriod.Files[i] = path.Join(dir, f)
-				}
-			}
+			p.Parameters.WorkingDirectory.Path = dir
 
 			var exp experiment.Experiment
 			var rng *rand.Rand
