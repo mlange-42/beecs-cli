@@ -13,6 +13,7 @@ import (
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/params"
+	butil "github.com/mlange-42/beecs/util"
 )
 
 func runModel(
@@ -30,7 +31,7 @@ func runModel(
 		sysCopy := make([]amod.System, len(systems))
 		// TODO: check copying!
 		for i, sys := range systems {
-			sysCopy[i] = util.CopyInterface[amod.System](sys)
+			sysCopy[i] = butil.CopyInterface[amod.System](sys)
 		}
 		model.WithSystems(p, sysCopy, m)
 	}
