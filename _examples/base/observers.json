@@ -5,12 +5,15 @@
         {
             "Observer": "obs.WorkerCohorts",
             "File": "out/WorkerCohorts.csv"
-        }
-    ],
-    "StepTables": [
+        },
         {
-            "Observer": "obs.ForagingStats",
-            "File": "out/ForagingStats.csv"
+            "Observer": "obs.Stores",
+            "File": "out/Stores.csv"
+        },
+        {
+            "Observer": "obs.Extinction",
+            "File": "out/Extinction.csv",
+            "Final": true
         }
     ],
     "TimeSeriesPlots": [

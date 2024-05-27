@@ -1,7 +1,8 @@
 {
     "Parameters": {
         "Termination": {
-            "MaxTicks": 3650
+            "MaxTicks": 3650,
+            "OnExtinction": true
         },
         "InitialPopulation": {
             "Count": 25000

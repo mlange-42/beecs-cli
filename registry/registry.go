@@ -21,6 +21,7 @@ func init() {
 	RegisterObserver[obs.PatchPollen]()
 	RegisterObserver[obs.NectarVisits]()
 	RegisterObserver[obs.PollenVisits]()
+	RegisterObserver[obs.Extinction]()
 
 	RegisterObserver[obs.AgeStructure]()
 	RegisterObserver[obs.ForagingStats]()
