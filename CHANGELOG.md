@@ -1,3 +1,10 @@
+## [[unpublished]](https://github.com/mlange-42/beecs-cli/compare/v0.2.0...main)
+
+### Features
+
+- Provides parameter `params.Termination.OnExtinction` to terminate simulations on extinction of all bees (#55)
+- Provides observer `Extinction` to report the tick of colony extinction (#55)
+
 ## [[v0.2.0]](https://github.com/mlange-42/beecs-cli/compare/v0.1.0...v0.2.0)
 
 ### Features
