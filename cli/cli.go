@@ -83,7 +83,7 @@ func rootCommand() *cobra.Command {
 				Parameters: params.Default(),
 			}
 			for _, f := range paramFiles {
-				err := p.FromJSON(path.Join(dir, f))
+				err := p.FromJSONFile(path.Join(dir, f))
 				if err != nil {
 					return err
 				}
@@ -207,7 +207,7 @@ func parametersCommand() *cobra.Command {
 				Custom:     map[reflect.Type]any{},
 			}
 			for _, f := range paramFiles {
-				err := p.FromJSON(path.Join(dir, f))
+				err := p.FromJSONFile(path.Join(dir, f))
 				if err != nil {
 					return err
 				}
