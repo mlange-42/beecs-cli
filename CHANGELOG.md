@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.4.1]](https://github.com/mlange-42/beecs-cli/compare/v0.4.0...v0.4.1)
+
+### Bugfixes
+
+- Upgrade beecs: fix for proper overwriting of default flower patches when reading from JSON (#58)
+
 ## [[v0.4.0]](https://github.com/mlange-42/beecs-cli/compare/v0.3.0...v0.4.0)
 
 ### Breaking changes
