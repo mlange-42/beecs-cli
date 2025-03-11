@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path"
 
-	amod "github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
@@ -15,13 +15,13 @@ func RunSequential(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *util.ObserversDef,
-	systems []amod.System,
+	systems []app.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
 	tps float64, rng *rand.Rand,
 	indices []int,
 ) error {
-	m := amod.New()
+	m := app.New()
 	m.FPS = 30
 	m.TPS = tps
 

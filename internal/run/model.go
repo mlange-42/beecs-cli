@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"time"
 
-	amod "github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/arche-pixel/window"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-pixel/window"
+	"github.com/mlange-42/ark-tools/app"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
@@ -20,38 +20,38 @@ func runModel(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *util.ObserversDef,
-	systems []amod.System,
+	systems []app.System,
 	overwrite []experiment.ParameterValue,
-	m *amod.Model,
+	a *app.App,
 	idx int, rSeed int32, noUi bool,
 ) (util.Tables, error) {
 	if len(systems) == 0 {
-		model.Default(p, m)
+		model.Default(p, a)
 	} else {
-		sysCopy := make([]amod.System, len(systems))
+		sysCopy := make([]app.System, len(systems))
 		// TODO: check copying!
 		for i, sys := range systems {
-			sysCopy[i] = butil.CopyInterface[amod.System](sys)
+			sysCopy[i] = butil.CopyInterface[app.System](sys)
 		}
-		model.WithSystems(p, sysCopy, m)
+		model.WithSystems(p, sysCopy, a)
 	}
 
 	values := exp.Values(idx)
-	err := exp.ApplyValues(values, &m.World)
+	err := exp.ApplyValues(values, &a.World)
 	if err != nil {
 		return util.Tables{}, err
 	}
 
 	for _, par := range overwrite {
-		if err = model.SetParameter(&m.World, par.Parameter, par.Value); err != nil {
+		if err = model.SetParameter(&a.World, par.Parameter, par.Value); err != nil {
 			return util.Tables{}, err
 		}
 	}
 
-	seedRes := ecs.GetResource[params.RandomSeed](&m.World)
+	seedRes := ecs.GetResource[params.RandomSeed](&a.World)
 	if rSeed >= 0 && seedRes.Seed <= 0 {
 		seedRes.Seed = int(rSeed)
-		m.Seed(uint64(rSeed))
+		a.Seed(uint64(rSeed))
 	}
 
 	obs, err := observers.CreateObservers(!noUi)
@@ -66,7 +66,7 @@ func runModel(
 	}
 
 	now := time.Now().UnixMilli()
-	seed := ecs.GetResource[params.RandomSeed](&m.World).Seed
+	seed := ecs.GetResource[params.RandomSeed](&a.World).Seed
 	result.Headers[0] = []string{"Run", "Seed", "Started", "Finished"}
 	result.Data[0] = [][]float64{{float64(idx), float64(seed), float64(now), 0}}
 	for _, v := range values {
@@ -91,7 +91,7 @@ func runModel(
 
 			result.Data[i+1] = append(result.Data[i+1], data)
 		}
-		m.AddSystem(t)
+		a.AddSystem(t)
 	}
 
 	offset := len(obs.Tables)
@@ -113,19 +113,19 @@ func runModel(
 				result.Data[offset+i+1] = append(result.Data[offset+i+1], data)
 			}
 		}
-		m.AddSystem(t)
+		a.AddSystem(t)
 	}
 
 	if !noUi {
 		for _, p := range obs.Windows {
-			m.AddUISystem(p)
+			a.AddUISystem(p)
 		}
 	}
 
 	if noUi {
-		m.Run()
+		a.Run()
 	} else {
-		window.Run(m)
+		window.Run(a)
 	}
 
 	now = time.Now().UnixMilli()

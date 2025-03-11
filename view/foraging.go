@@ -7,8 +7,7 @@ import (
 	"github.com/gopxl/pixel/v2"
 	"github.com/gopxl/pixel/v2/backends/opengl"
 	"github.com/gopxl/pixel/v2/ext/imdraw"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -20,7 +19,7 @@ type Foraging struct {
 	stores        *globals.Stores
 	popStats      *globals.PopulationStats
 	energyContent *params.EnergyContent
-	patchFilter   generic.Filter3[comp.Coords, comp.Resource, comp.Visits]
+	patchFilter   ecs.Filter3[comp.Coords, comp.Resource, comp.Visits]
 }
 
 // Initialize the system
@@ -30,7 +29,7 @@ func (f *Foraging) Initialize(w *ecs.World, win *opengl.Window) {
 	f.stores = ecs.GetResource[globals.Stores](w)
 	f.popStats = ecs.GetResource[globals.PopulationStats](w)
 	f.energyContent = ecs.GetResource[params.EnergyContent](w)
-	f.patchFilter = *generic.NewFilter3[comp.Coords, comp.Resource, comp.Visits]()
+	f.patchFilter = *ecs.NewFilter3[comp.Coords, comp.Resource, comp.Visits](w)
 }
 
 // Update the drawer.
@@ -85,7 +84,7 @@ func (f *Foraging) Draw(w *ecs.World, win *opengl.Window) {
 		popScale*math.Sqrt(float64(f.popStats.TotalBrood)),
 		popLine, color.RGBA{230, 230, 230, 255})
 
-	query := f.patchFilter.Query(w)
+	query := f.patchFilter.Query()
 	for query.Next() {
 		coords, res, vis := query.Get()
 		px, py := cx+coords.X*scale, cy+coords.Y*scale

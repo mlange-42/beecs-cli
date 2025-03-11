@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/mlange-42/arche-model/observer"
-	"github.com/mlange-42/arche-model/reporter"
-	"github.com/mlange-42/arche-pixel/plot"
-	"github.com/mlange-42/arche-pixel/window"
+	"github.com/mlange-42/ark-pixel/monitor"
+	"github.com/mlange-42/ark-pixel/plot"
+	"github.com/mlange-42/ark-pixel/window"
+	"github.com/mlange-42/ark-tools/observer"
+	"github.com/mlange-42/ark-tools/reporter"
 	"github.com/mlange-42/beecs-cli/registry"
 )
 
@@ -160,7 +161,7 @@ func createTimeSeriesPlots(plots []TimeSeriesPlotDef) ([]*window.Window, error) 
 			Labels:         p.Labels,
 			MaxRows:        p.MaxRows,
 		})
-		win = win.With(&plot.Controls{})
+		win = win.With(&monitor.Controls{})
 
 		windows[i] = win
 	}
@@ -202,7 +203,7 @@ func createLinePlots(plots []LinePlotDef) ([]*window.Window, error) {
 			XLim:     p.XLim,
 			YLim:     p.YLim,
 		})
-		win = win.With(&plot.Controls{})
+		win = win.With(&monitor.Controls{})
 
 		windows[i] = win
 	}
@@ -237,7 +238,7 @@ func createViews(views []ViewDef) ([]*window.Window, error) {
 			DrawInterval: p.DrawInterval,
 		}
 		win = win.With(drawerCast)
-		win = win.With(&plot.Controls{})
+		win = win.With(&monitor.Controls{})
 
 		windows[i] = win
 	}

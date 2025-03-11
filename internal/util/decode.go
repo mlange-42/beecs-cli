@@ -6,7 +6,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/registry"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
@@ -82,7 +82,7 @@ func ObserversDefFromFile(path string) (ObserversDef, error) {
 	return obs, nil
 }
 
-func SystemsFromFile(path string) ([]model.System, error) {
+func SystemsFromFile(path string) ([]app.System, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -97,14 +97,14 @@ func SystemsFromFile(path string) ([]model.System, error) {
 		return nil, err
 	}
 
-	sys := []model.System{}
+	sys := []app.System{}
 	for _, tpName := range sysStr {
 		tp, ok := registry.GetSystem(tpName)
 		if !ok {
 			return nil, fmt.Errorf("system type '%s' is not registered", tpName)
 		}
 		sysVal := reflect.New(tp).Interface()
-		s, ok := sysVal.(model.System)
+		s, ok := sysVal.(app.System)
 		if !ok {
 			return nil, fmt.Errorf("system type '%s' does not implement the System interface", tpName)
 		}

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/internal/run"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
@@ -118,7 +118,7 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
-			var systems []model.System
+			var systems []app.System
 			if flagUsed["systems"] {
 				systems, err = util.SystemsFromFile(path.Join(dir, sysFile))
 				if err != nil {
