@@ -4,20 +4,19 @@ go 1.24.0
 
 require (
 	github.com/gopxl/pixel/v2 v2.1.0
-	github.com/mlange-42/ark v0.3.1-0.20250311114501-f1a1df3dea57
-	github.com/mlange-42/ark-pixel v0.1.2-0.20250310220012-687139e25cc3
-	github.com/mlange-42/ark-tools v0.1.2
-	github.com/mlange-42/beecs v0.4.1
-	github.com/spf13/cobra v1.8.0
-	github.com/spf13/pflag v1.0.5
-	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
+	github.com/mlange-42/ark v0.4.0
+	github.com/mlange-42/ark-pixel v0.1.2
+	github.com/mlange-42/ark-tools v0.1.3
+	github.com/mlange-42/beecs v0.5.0
+	github.com/spf13/cobra v1.9.1
+	github.com/spf13/pflag v1.0.6
 )
 
-replace github.com/mlange-42/beecs v0.4.1 => ../beecs
+replace github.com/mlange-42/beecs v0.5.0 => ../beecs
 
 require (
-	codeberg.org/go-fonts/liberation v0.4.0 // indirect
-	codeberg.org/go-latex/latex v0.0.0-20250304174001-fb59698489e0 // indirect
+	codeberg.org/go-fonts/liberation v0.4.1 // indirect
+	codeberg.org/go-latex/latex v0.0.1 // indirect
 	codeberg.org/go-pdf/fpdf v0.10.0 // indirect
 	git.sr.ht/~sbinet/gg v0.6.0 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
@@ -33,8 +32,9 @@ require (
 	github.com/mazznoer/csscolorparser v0.1.5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/image v0.25.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	gonum.org/v1/gonum v0.15.1 // indirect
-	gonum.org/v1/plot v0.15.1 // indirect
+	gonum.org/v1/plot v0.15.2 // indirect
 )

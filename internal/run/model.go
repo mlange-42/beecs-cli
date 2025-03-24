@@ -23,7 +23,7 @@ func runModel(
 	systems []app.System,
 	overwrite []experiment.ParameterValue,
 	a *app.App,
-	idx int, rSeed int32, noUi bool,
+	idx int, rSeed int32, noUI bool,
 ) (util.Tables, error) {
 	if len(systems) == 0 {
 		model.Default(p, a)
@@ -54,7 +54,7 @@ func runModel(
 		a.Seed(uint64(rSeed))
 	}
 
-	obs, err := observers.CreateObservers(!noUi)
+	obs, err := observers.CreateObservers(!noUI)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -116,13 +116,13 @@ func runModel(
 		a.AddSystem(t)
 	}
 
-	if !noUi {
+	if !noUI {
 		for _, p := range obs.Windows {
 			a.AddUISystem(p)
 		}
 	}
 
-	if noUi {
+	if noUI {
 		a.Run()
 	} else {
 		window.Run(a)

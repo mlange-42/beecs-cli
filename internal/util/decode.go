@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand/v2"
 	"os"
 	"reflect"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/mlange-42/beecs-cli/registry"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 func ParametersFromFile(path string, params *params.DefaultParams) error {
@@ -50,7 +50,7 @@ func ExperimentFromFile(path string, runs int, seed int) (experiment.Experiment,
 	} else if seed < 0 {
 		seed = int(rand.Uint32())
 	}
-	rng := rand.New(rand.NewSource(uint64(seed)))
+	rng := rand.New(rand.NewPCG(0, uint64(seed)))
 
 	exp, err := experiment.New(expJs.Parameters, rng, runs)
 	if err != nil {
