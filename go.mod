@@ -7,12 +7,10 @@ require (
 	github.com/mlange-42/ark v0.4.0
 	github.com/mlange-42/ark-pixel v0.1.2
 	github.com/mlange-42/ark-tools v0.1.3
-	github.com/mlange-42/beecs v0.5.0
+	github.com/mlange-42/beecs v0.5.1-0.20250324214504-8d594e34874c
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 )
-
-replace github.com/mlange-42/beecs v0.5.0 => ../beecs
 
 require (
 	codeberg.org/go-fonts/liberation v0.4.1 // indirect
