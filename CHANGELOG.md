@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/beecs-cli/compare/v0.4.1...main)
+
+### Other
+
+- Migrates from Arche to Ark as ECS package (#59)
+
 ## [[v0.4.1]](https://github.com/mlange-42/beecs-cli/compare/v0.4.0...v0.4.1)
 
 ### Bugfixes
