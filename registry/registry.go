@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/mlange-42/arche-pixel/plot"
+	"github.com/mlange-42/ark-pixel/monitor"
 	"github.com/mlange-42/beecs-cli/view"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/registry"
@@ -26,9 +26,9 @@ func init() {
 	RegisterObserver[obs.AgeStructure]()
 	RegisterObserver[obs.ForagingStats]()
 
-	RegisterDrawer[plot.Monitor]()
-	RegisterDrawer[plot.Resources]()
-	RegisterDrawer[plot.Systems]()
+	RegisterDrawer[monitor.Monitor]()
+	RegisterDrawer[monitor.Resources]()
+	RegisterDrawer[monitor.Systems]()
 	RegisterDrawer[view.Foraging]()
 
 	//RegisterResource[...]()

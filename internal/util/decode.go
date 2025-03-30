@@ -3,14 +3,14 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand/v2"
 	"os"
 	"reflect"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/registry"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 func ParametersFromFile(path string, params *params.DefaultParams) error {
@@ -50,7 +50,7 @@ func ExperimentFromFile(path string, runs int, seed int) (experiment.Experiment,
 	} else if seed < 0 {
 		seed = int(rand.Uint32())
 	}
-	rng := rand.New(rand.NewSource(uint64(seed)))
+	rng := rand.New(rand.NewPCG(0, uint64(seed)))
 
 	exp, err := experiment.New(expJs.Parameters, rng, runs)
 	if err != nil {
@@ -82,7 +82,7 @@ func ObserversDefFromFile(path string) (ObserversDef, error) {
 	return obs, nil
 }
 
-func SystemsFromFile(path string) ([]model.System, error) {
+func SystemsFromFile(path string) ([]app.System, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -97,14 +97,14 @@ func SystemsFromFile(path string) ([]model.System, error) {
 		return nil, err
 	}
 
-	sys := []model.System{}
+	sys := []app.System{}
 	for _, tpName := range sysStr {
 		tp, ok := registry.GetSystem(tpName)
 		if !ok {
 			return nil, fmt.Errorf("system type '%s' is not registered", tpName)
 		}
 		sysVal := reflect.New(tp).Interface()
-		s, ok := sysVal.(model.System)
+		s, ok := sysVal.(app.System)
 		if !ok {
 			return nil, fmt.Errorf("system type '%s' does not implement the System interface", tpName)
 		}

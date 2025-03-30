@@ -2,26 +2,27 @@ package run
 
 import (
 	"fmt"
+	"math/rand/v2"
 	"path"
 
-	amod "github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
-func RunSequential(
+// Sequential runs experiments sequentially.
+func Sequential(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *util.ObserversDef,
-	systems []amod.System,
+	systems []app.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
 	tps float64, rng *rand.Rand,
 	indices []int,
 ) error {
-	m := amod.New()
+	m := app.New()
 	m.FPS = 30
 	m.TPS = tps
 
@@ -49,7 +50,7 @@ func RunSequential(
 		actualRuns = len(indices)
 	}
 	err = iterate(maxRuns, indices, func(idx int) error {
-		result, err := runModel(p, exp, observers, systems, overwrite, m, idx, rng.Int31(), actualRuns > 1)
+		result, err := runModel(p, exp, observers, systems, overwrite, m, idx, rng.Int32(), actualRuns > 1)
 		if err != nil {
 			return err
 		}

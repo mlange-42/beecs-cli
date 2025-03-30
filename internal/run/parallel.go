@@ -3,13 +3,13 @@ package run
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 	"path"
 
-	amod "github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 type job struct {
@@ -17,11 +17,12 @@ type job struct {
 	Seed  int32
 }
 
-func RunParallel(
+// Parallel runs experiments in parallel.
+func Parallel(
 	p params.Params,
 	exp *experiment.Experiment,
 	observers *util.ObserversDef,
-	systems []amod.System,
+	systems []app.System,
 	overwrite []experiment.ParameterValue,
 	dir string,
 	threads int, tps float64, rng *rand.Rand,
@@ -40,7 +41,7 @@ func RunParallel(
 
 	seeds := make([]int32, maxRuns)
 	for i := range seeds {
-		seeds[i] = rng.Int31()
+		seeds[i] = rng.Int32()
 	}
 
 	// Start the workers.
@@ -95,9 +96,9 @@ func RunParallel(
 
 func worker(jobs <-chan job, results chan<- util.Tables,
 	p params.Params, exp *experiment.Experiment, observers *util.ObserversDef,
-	systems []amod.System, overwrite []experiment.ParameterValue, tps float64) {
+	systems []app.System, overwrite []experiment.ParameterValue, tps float64) {
 
-	m := amod.New()
+	m := app.New()
 	m.FPS = 30
 	m.TPS = tps
 

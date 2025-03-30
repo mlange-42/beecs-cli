@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand/v2"
 	"os"
 	"path"
 	"path/filepath"
@@ -12,23 +13,23 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/beecs-cli/internal/run"
 	"github.com/mlange-42/beecs-cli/internal/util"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/params"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"golang.org/x/exp/rand"
 )
 
 const (
-	_PARAMETERS = "parameters.json"
-	_OBSERVERS  = "observers.json"
-	_EXPERIMENT = "experiment.json"
-	_SYSTEMS    = "systems.json"
+	parametersFile = "parameters.json"
+	observersFile  = "observers.json"
+	experimentFile = "experiment.json"
+	systemsFile    = "systems.json"
 )
 
+// Run the CLI app.
 func Run() {
 	if err := rootCommand().Execute(); err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
@@ -73,7 +74,7 @@ func rootCommand() *cobra.Command {
 				flagUsed[f.Name] = true
 			})
 
-			rand.Seed(uint64(time.Now().UTC().Nanosecond()))
+			rootRng := rand.New(rand.NewPCG(0, uint64(time.Now().UTC().Nanosecond())))
 
 			if outDir == "" {
 				outDir = dir
@@ -101,9 +102,9 @@ func rootCommand() *cobra.Command {
 			} else {
 				seedUsed := uint64(seed)
 				if seed <= 0 {
-					seedUsed = rand.Uint64()
+					seedUsed = rootRng.Uint64()
 				}
-				rng = rand.New(rand.NewSource(seedUsed))
+				rng = rand.New(rand.NewPCG(0, seedUsed))
 				exp, err = experiment.New([]experiment.ParameterVariation{}, rng, runs)
 				if err != nil {
 					return err
@@ -118,7 +119,7 @@ func rootCommand() *cobra.Command {
 				}
 			}
 
-			var systems []model.System
+			var systems []app.System
 			if flagUsed["systems"] {
 				systems, err = util.SystemsFromFile(path.Join(dir, sysFile))
 				if err != nil {
@@ -147,29 +148,28 @@ func rootCommand() *cobra.Command {
 				threads = 1
 			}
 			if threads <= 1 {
-				return run.RunSequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng, indices)
-			} else {
-				return run.RunParallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng, indices)
+				return run.Sequential(&p, &exp, &observers, systems, overwriteParams, outDir, speed, rng, indices)
 			}
+			return run.Parallel(&p, &exp, &observers, systems, overwriteParams, outDir, threads, speed, rng, indices)
 		},
 	}
 
 	root.Flags().StringVarP(&dir, "directory", "d", ".", "Working directory")
 	root.Flags().StringVarP(&outDir, "output", "", "", "Output directory if different from working directory")
-	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{_PARAMETERS},
+	root.Flags().StringSliceVarP(&paramFiles, "parameters", "p", []string{parametersFile},
 		"Parameter files, processed in the given order\n")
 
 	root.Flags().StringVarP(&expFile, "experiment", "e", "",
 		"Run experiment.\n Optionally, provide an experiment file for parameter variation")
-	root.Flag("experiment").NoOptDefVal = _EXPERIMENT
+	root.Flag("experiment").NoOptDefVal = experimentFile
 
 	root.Flags().StringVarP(&obsFile, "observers", "o", "",
 		"Run with observers.\n Optionally, provide an observers file for adding observers")
-	root.Flag("observers").NoOptDefVal = _OBSERVERS
+	root.Flag("observers").NoOptDefVal = observersFile
 
 	root.Flags().StringVarP(&sysFile, "systems", "s", "",
 		"Run with custom systems.\n Optionally, provide a systems file for using custom systems\n or changing the scheduling")
-	root.Flag("systems").NoOptDefVal = _SYSTEMS
+	root.Flag("systems").NoOptDefVal = systemsFile
 
 	root.Flags().IntVarP(&seed, "seed", "", 0,
 		"Overwrite experiment super random seed for seed generation.\n Default: don't overwrite.\n Use -1 to force random seeding")
@@ -242,9 +242,9 @@ func initCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			parFile := path.Join(dir, _PARAMETERS)
-			obsFile := path.Join(dir, _OBSERVERS)
-			expFile := path.Join(dir, _EXPERIMENT)
+			parFile := path.Join(dir, parametersFile)
+			obsFile := path.Join(dir, observersFile)
+			expFile := path.Join(dir, experimentFile)
 
 			if fileExists(parFile) {
 				return fmt.Errorf("parameter file '%s' already exists", parFile)
