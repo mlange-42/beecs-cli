@@ -51,9 +51,9 @@
         }
     ],
     "Views": [
-        {"Drawer": "plot.Monitor"},
-        {"Drawer": "plot.Resources"},
-        {"Drawer": "plot.Systems"},
+        {"Drawer": "monitor.Monitor"},
+        {"Drawer": "monitor.Resources"},
+        {"Drawer": "monitor.Systems"},
         {"Drawer": "view.Foraging"}
     ]
 }

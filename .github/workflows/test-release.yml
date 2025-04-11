@@ -20,7 +20,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.24.x'
       - name: Install dependencies
         run: |
           sudo apt-get update -y
@@ -49,7 +49,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.24.x'
       - name: Install dependencies
         run: |
           sudo apt-get update -y
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.24.x'
       - name: Build
         run: GOOS=darwin GOARCH=arm64 CGO_ENABLED=1 go build -ldflags="-s -w" -o beecs .
       - name: Compress binaries
@@ -102,7 +102,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.24.x'
       - name: Build
         run: GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build -ldflags="-s -w" -o beecs .
       - name: Compress binaries
