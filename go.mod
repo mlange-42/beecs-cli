@@ -4,17 +4,17 @@ go 1.24.0
 
 require (
 	github.com/gopxl/pixel/v2 v2.1.0
-	github.com/mlange-42/ark v0.4.1
-	github.com/mlange-42/ark-pixel v0.1.2
-	github.com/mlange-42/ark-tools v0.1.4
-	github.com/mlange-42/beecs v0.5.1-0.20250324214504-8d594e34874c
-	github.com/spf13/cobra v1.9.1
-	github.com/spf13/pflag v1.0.6
+	github.com/mlange-42/ark v0.8.0
+	github.com/mlange-42/ark-pixel v0.1.5
+	github.com/mlange-42/ark-tools v0.3.0
+	github.com/mlange-42/beecs v0.5.1-0.20260407094130-95d1218754db
+	github.com/spf13/cobra v1.10.2
+	github.com/spf13/pflag v1.0.10
 )
 
 require (
-	codeberg.org/go-fonts/liberation v0.4.1 // indirect
-	codeberg.org/go-latex/latex v0.0.1 // indirect
+	codeberg.org/go-fonts/liberation v0.5.0 // indirect
+	codeberg.org/go-latex/latex v0.1.0 // indirect
 	codeberg.org/go-pdf/fpdf v0.10.0 // indirect
 	git.sr.ht/~sbinet/gg v0.6.0 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
@@ -33,6 +33,6 @@ require (
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
 	golang.org/x/image v0.25.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
-	gonum.org/v1/gonum v0.15.1 // indirect
+	gonum.org/v1/gonum v0.17.0 // indirect
 	gonum.org/v1/plot v0.15.2 // indirect
 )

@@ -37,18 +37,18 @@ func runModel(
 	}
 
 	values := exp.Values(idx)
-	err := exp.ApplyValues(values, &a.World)
+	err := exp.ApplyValues(values, a.World)
 	if err != nil {
 		return util.Tables{}, err
 	}
 
 	for _, par := range overwrite {
-		if err = model.SetParameter(&a.World, par.Parameter, par.Value); err != nil {
+		if err = model.SetParameter(a.World, par.Parameter, par.Value); err != nil {
 			return util.Tables{}, err
 		}
 	}
 
-	seedRes := ecs.GetResource[params.RandomSeed](&a.World)
+	seedRes := ecs.GetResource[params.RandomSeed](a.World)
 	if rSeed >= 0 && seedRes.Seed <= 0 {
 		seedRes.Seed = int(rSeed)
 		a.Seed(uint64(rSeed))
@@ -66,7 +66,7 @@ func runModel(
 	}
 
 	now := time.Now().UnixMilli()
-	seed := ecs.GetResource[params.RandomSeed](&a.World).Seed
+	seed := ecs.GetResource[params.RandomSeed](a.World).Seed
 	result.Headers[0] = []string{"Run", "Seed", "Started", "Finished"}
 	result.Data[0] = [][]float64{{float64(idx), float64(seed), float64(now), 0}}
 	for _, v := range values {

@@ -47,6 +47,7 @@ func init() {
 	RegisterSystem[sys.TransitionForagers]()
 	RegisterSystem[sys.EggLaying]()
 
+	RegisterSystem[sys.NewCohorts]()
 	RegisterSystem[sys.MortalityCohorts]()
 	RegisterSystem[sys.MortalityForagers]()
 
