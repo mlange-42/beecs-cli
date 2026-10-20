@@ -1,6 +1,6 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/beecs-cli/compare/v0.4.1...main)
+## [[v0.4.2]](https://github.com/mlange-42/beecs-cli/compare/v0.4.1...v0.4.2)
 
 ### Other
 

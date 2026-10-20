@@ -8,18 +8,24 @@
 	"sys.CalcAff",
 	"sys.CalcForagingPeriod",
 	"sys.ReplenishPatches",
-	"sys.BroodCare",
-	"sys.AgeCohorts",
-	"sys.TransitionForagers",
-	"sys.EggLaying",
 
 	"sys.MortalityCohorts",
-	"sys.MortalityForagers",
+	"sys.AgeCohorts",
+	"sys.EggLaying",
+	"sys.TransitionForagers",
+	
+	"sys.CountPopulation",
+	"sys.BroodCare",
+	
+	"sys.NewCohorts",
+	"sys.CountPopulation",
 
 	"sys.Foraging",
+	"sys.MortalityForagers",
+
+	"sys.CountPopulation",
 	"sys.HoneyConsumption",
 	"sys.PollenConsumption",
 
-	"sys.CountPopulation",
 	"sys.FixedTermination"
 ]
