@@ -1,13 +1,13 @@
 module github.com/mlange-42/beecs-cli
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/gopxl/pixel/v2 v2.1.0
-	github.com/mlange-42/ark v0.8.0
-	github.com/mlange-42/ark-pixel v0.1.5
-	github.com/mlange-42/ark-tools v0.3.0
-	github.com/mlange-42/beecs v0.5.1-0.20260407094130-95d1218754db
+	github.com/mlange-42/ark v0.8.3
+	github.com/mlange-42/ark-pixel v0.1.6
+	github.com/mlange-42/ark-tools v0.3.1
+	github.com/mlange-42/beecs v0.6.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 )
@@ -26,13 +26,12 @@ require (
 	github.com/gopxl/glhf/v2 v2.1.0 // indirect
 	github.com/gopxl/mainthread/v2 v2.1.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/mazznoer/colorgrad v0.10.0 // indirect
-	github.com/mazznoer/csscolorparser v0.1.5 // indirect
+	github.com/mazznoer/colorgrad v0.11.1 // indirect
+	github.com/mazznoer/csscolorparser v0.1.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
-	golang.org/x/image v0.25.0 // indirect
-	golang.org/x/text v0.23.0 // indirect
+	golang.org/x/image v0.39.0 // indirect
+	golang.org/x/text v0.36.0 // indirect
 	gonum.org/v1/gonum v0.17.0 // indirect
-	gonum.org/v1/plot v0.15.2 // indirect
+	gonum.org/v1/plot v0.16.0 // indirect
 )
